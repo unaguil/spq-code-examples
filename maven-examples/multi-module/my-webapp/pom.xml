@@ -17,12 +17,6 @@
   <name>my-webapp</name>
   <url>http://www.example.com</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <dependencies>
     <!-- this projects requires the following dependency to build 
       as it uses some classes defined in that library
@@ -33,21 +27,23 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
   
+    <!-- although the dependency version is inherited from the parent POM
+      through the dependencyManagement, it is required to explicitly include
+      the usage of the dependency -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- included to overwrite the default version of the maven-compiler-plugin used by maven -->
+       <!-- although the plugin version and config is inherited from the parent POM
+      through the plugingManagement, it is required to explicitly include
+      the usage of the pluging -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
       </plugin>
     </plugins>
   </build>
