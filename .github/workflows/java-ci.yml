@@ -1,0 +1,40 @@
+name: build
+
+on: [push]
+
+jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - id: set-matrix
+        run: |
+          output="::set-output name=matrix::{\"include\":["
+          for dir in $(ls -d */*); do
+            output+="{\"dir\":\"$dir\"},"
+          done
+          output+="]}"
+          echo $output
+
+  build:
+    needs: prepare-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix)}}
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots install
