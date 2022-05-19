@@ -16,14 +16,17 @@ import com.example.pojo.User;
 
 public class ClientApp {
 
+    private static final String SERVER_ENDPOINT = "http://localhost:8080/webapi";
+    private static final String USERS_RESOURCE ="users";
+
     public static void main(String[] args) {
         // create the jersey client and configure the application endpoint
         Client client = ClientBuilder.newClient();
-        final WebTarget appTarget = client.target("http://localhost:8080/webapi");
+        final WebTarget appTarget = client.target(SERVER_ENDPOINT);
 
         // issuing a GET request to the users endpoint with some query parameters
         try {
-            Response response = appTarget.path("users")
+            Response response = appTarget.path(USERS_RESOURCE)
                 .queryParam("filter", "e")
                 .queryParam("order", "desc")
                 .request(MediaType.APPLICATION_JSON)
@@ -45,7 +48,7 @@ public class ClientApp {
         // sending a POST with a new user
         try {
             User user = new User(31, "Steven", "Spielberg");
-            Response response = appTarget.path("users")
+            Response response = appTarget.path(USERS_RESOURCE)
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON)
             );
@@ -66,7 +69,7 @@ public class ClientApp {
 
         try {
             int code = 10;
-            Response response = appTarget.path("users")
+            Response response = appTarget.path(USERS_RESOURCE)
                 .path(Integer.toString(code))
                 .request()
                 .delete();

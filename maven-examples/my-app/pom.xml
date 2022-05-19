@@ -13,11 +13,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- this properties specify the source and target format of our code -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- <maven.compiler.source>1.8</maven.compiler.source> -->
+    <!-- <maven.compiler.target>1.8</maven.compiler.target> -->
     <!-- starting from JDK 9 is better to use the release property as it checks
       if we are using API libraries that are no available in the specified version -->
-    <!-- <maven.compiler.target>8</maven.compiler.target> -->
+    <maven.compiler.release>8</maven.compiler.release>
   </properties>
 
   <dependencies>

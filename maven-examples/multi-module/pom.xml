@@ -3,18 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mycompany.app</groupId>
   <version>1.0-SNAPSHOT</version>
-  <artifactId>app</artifactId>
+  <artifactId>multi-module</artifactId>
   <packaging>pom</packaging>
   <modules>
     <module>my-app</module>
     <module>my-webapp</module>
   </modules>
 
-  <!-- this dependencies will be inherited by the sub-modules -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <!-- specifies the dependencies versions for all the sub-modules.
@@ -42,6 +39,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.10.1</version>
+          <!-- configuration will be inherited by submodules -->
+          <inherited>true</inherited>
+          <configuration>
+            <release>8</release>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

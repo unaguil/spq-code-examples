@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.WindowConstants;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -64,7 +64,7 @@ public class DonationManager implements ActionListener, Runnable {
 		this.frame.getContentPane().add(panelSuperior, "North");
 		this.frame.getContentPane().add(panelBoton);
 		this.frame.getContentPane().add(this.message, "South");
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		WindowManager.middleCenter(this.frame);
 		this.frame.setVisible(true);
 
@@ -85,8 +85,7 @@ public class DonationManager implements ActionListener, Runnable {
 		Invocation.Builder invocationBuilder = donationsWebTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.get();
 		if (response.getStatus() == Status.OK.getStatusCode()) {
-			DonationInfo donationInfo = response.readEntity(DonationInfo.class);
-			return donationInfo;
+			return response.readEntity(DonationInfo.class);
 		} else {
 			throw new DonationException("" + response.getStatus());
 		}
@@ -98,14 +97,12 @@ public class DonationManager implements ActionListener, Runnable {
 			try { 
 				Thread.sleep(2000);
 				System.out.println("Obtaining data from server...");
-				try {
-					DonationInfo donationInfo = getDonationInfo();
-					this.donation.setText(Integer.toString(donationInfo.getLast()));
-					this.total.setText(Integer.toString(donationInfo.getTotal()));
-				} catch (DonationException e) {
-					System.out.println(e.getMessage());
-				}
-            } catch (InterruptedException e){ 
+				DonationInfo donationInfo = getDonationInfo();
+				this.donation.setText(Integer.toString(donationInfo.getLast()));
+				this.total.setText(Integer.toString(donationInfo.getTotal()));
+            } catch (DonationException e) {
+				System.out.println(e.getMessage());
+			} catch (InterruptedException e){ 
                 Thread.currentThread().interrupt();
                 System.out.println("Thread was interrupted, Failed to complete operation");
             }
@@ -120,6 +117,6 @@ public class DonationManager implements ActionListener, Runnable {
 		String hostname = args[0];
 		String port = args[1];
 
-		DonationManager donationManager = new DonationManager(hostname, port);
+		new DonationManager(hostname, port);
 	}
 }

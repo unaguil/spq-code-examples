@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
+import javax.swing.WindowConstants;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -29,9 +29,9 @@ public class Donor implements ActionListener, Runnable {
 	private JFrame frame;
 	private JButton buttonEnd;
 	private JButton buttonDonate;
-	private JTextField donation;
-	private JTextField total;
-	private JLabel message;
+	private JTextField donationField;
+	private JTextField totalField;
+	private JLabel messageLabel;
 
 	private Client client;
 	private WebTarget webTarget;
@@ -47,19 +47,19 @@ public class Donor implements ActionListener, Runnable {
 		this.buttonDonate.addActionListener(this);
 		this.buttonEnd = new JButton("End Process");
 		this.buttonEnd.addActionListener(this);
-		this.donation = new JTextField(10);
-		this.total = new JTextField(10);
-		this.total.setEnabled(false);
-		this.message = new JLabel("Welcome to the REST Donor Client");
-		this.message.setOpaque(true);
-		this.message.setForeground(Color.yellow);
-		this.message.setBackground(Color.gray);
+		this.donationField = new JTextField(10);
+		this.totalField = new JTextField(10);
+		this.totalField.setEnabled(false);
+		this.messageLabel = new JLabel("Welcome to the REST Donor Client");
+		this.messageLabel.setOpaque(true);
+		this.messageLabel.setForeground(Color.yellow);
+		this.messageLabel.setBackground(Color.gray);
 
 		JPanel panelDonativos = new JPanel();
 		panelDonativos.add(new JLabel("Donation: "));
-		panelDonativos.add(this.donation);
+		panelDonativos.add(this.donationField);
 		panelDonativos.add(new JLabel("Total Amount: "));
-		panelDonativos.add(this.total);
+		panelDonativos.add(this.totalField);
 
 		JPanel panelBotones = new JPanel();
 		panelBotones.add(this.buttonDonate);
@@ -70,8 +70,8 @@ public class Donor implements ActionListener, Runnable {
 		this.frame.setResizable(false);		
 		this.frame.getContentPane().add(panelDonativos, "North");
 		this.frame.getContentPane().add(panelBotones);
-		this.frame.getContentPane().add(this.message, "South");
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.getContentPane().add(this.messageLabel, "South");
+		this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		WindowManager.middleLeft(this.frame);
 		this.frame.setVisible(true);
 
@@ -88,14 +88,14 @@ public class Donor implements ActionListener, Runnable {
 
 		if (target == this.buttonDonate) {
 			try {
-				int donation = Integer.parseInt(this.donation.getText());
-				this.message.setText("Sending donation ...");
+				int donation = Integer.parseInt(this.donationField.getText());
+				this.messageLabel.setText("Sending donation ...");
 				this.sendDonation(donation);
-				this.message.setText("Donation of " + donation + " already sent...");
+				this.messageLabel.setText("Donation of " + donation + " already sent...");
 			} catch (NumberFormatException exc) {
-				this.message.setText(" # Error sending donation. Donation must be an integer.");
+				this.messageLabel.setText(" # Error sending donation. Donation must be an integer.");
 			} catch (DonationException exc) {
-				this.message.setText(" # Error sending donation. ");
+				this.messageLabel.setText(" # Error sending donation. ");
 			}
 		}
 	}
@@ -116,8 +116,7 @@ public class Donor implements ActionListener, Runnable {
 		Invocation.Builder invocationBuilder = donationsWebTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.get();
 		if (response.getStatus() == Status.OK.getStatusCode()) {
-			DonationInfo donationInfo = response.readEntity(DonationInfo.class);
-			return donationInfo;
+			return response.readEntity(DonationInfo.class);
 		} else {
 			throw new DonationException("" + response.getStatus());
 		}
@@ -129,13 +128,11 @@ public class Donor implements ActionListener, Runnable {
 			try { 
 				Thread.sleep(2000);
 				System.out.println("Obtaining data from server...");
-				try {
-					DonationInfo donationInfo = getDonationInfo();
-					this.total.setText(Integer.toString(donationInfo.getTotal()));
-				} catch (DonationException e) {
-					System.out.println(e.getMessage());
-				}
-            } catch (InterruptedException e){ 
+				DonationInfo donationInfo = getDonationInfo();
+				this.totalField.setText(Integer.toString(donationInfo.getTotal()));
+			} catch (DonationException e) {
+				System.out.println(e.getMessage());
+			} catch (InterruptedException e){ 
                 Thread.currentThread().interrupt();
                 System.out.println("Thread was interrupted, Failed to complete operation");
             }
@@ -150,6 +147,6 @@ public class Donor implements ActionListener, Runnable {
 		String hostname = args[0];
 		String port = args[1];
 
-		Donor donor = new Donor(hostname, port);
+		new Donor(hostname, port);
 	}
 }
