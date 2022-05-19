@@ -2,7 +2,6 @@ package com.example.client;
 
 import java.util.List;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,7 +19,7 @@ public class ClientApp {
     public static void main(String[] args) {
         // create the jersey client and configure the application endpoint
         Client client = ClientBuilder.newClient();
-        final WebTarget appTarget = client.target("http://localhost:8080/");
+        final WebTarget appTarget = client.target("http://localhost:8080/webapi");
 
         // issuing a GET request to the users endpoint with some query parameters
         try {

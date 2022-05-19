@@ -2,10 +2,13 @@ Jersey Example Project With Maven
 ---------------------------------
 
 The project contains the server and client example codes.
+First, the server and client can be compiled using
 
-First, to launch the server run the command
+    mvn compile
 
-    mvn compile exec:java
+To launch the server run the command
+
+    mvn jetty:run
 
 Now, the client sample code can be executed in a new command window with
 
