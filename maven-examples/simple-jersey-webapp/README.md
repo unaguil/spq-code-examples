@@ -1,5 +1,5 @@
-Jersey Example Project With Maven
----------------------------------
+Simple Jersey Application With Maven
+====================================
 
 The project contains the server and client example codes.
 First, the server and client can be compiled using

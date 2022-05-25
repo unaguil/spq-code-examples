@@ -1,5 +1,5 @@
-POM FOR A RESTful EXAMPLE
--------------------------
+Donations REST Example
+----------------------
 
 First, the whole code can be compile using:
 

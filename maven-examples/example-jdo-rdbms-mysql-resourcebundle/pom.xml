@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>org.datanucleus</groupId>
-	<artifactId>Datanucleus-Samples-JDO-MySQL-I18N</artifactId>
+	<artifactId>datanucleus-jdo-mysql-i18n</artifactId>
 	<packaging>jar</packaging>
 	<version>3.0</version>
-	<name>DataNucleus AccessPlatform Tutorial for JDO</name>
+	<name>DataNucleus + MySQL + I18N</name>
 	<url>http://www.datanucleus.org</url>
 
 	<properties>
