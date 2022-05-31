@@ -14,7 +14,7 @@ import java.util.List;
  * constructors to create a MoneyBag.
  */
 public class MoneyBag implements IMoney {
-	private List<Money> fMonies = new ArrayList<Money>(5);
+	private List<Money> fMonies = new ArrayList<>(5);
 
 	public static IMoney create(IMoney m1, IMoney m2) {
 		MoneyBag result = new MoneyBag();
@@ -57,9 +57,8 @@ public class MoneyBag implements IMoney {
 
 	@Override
 	public boolean equals(Object anObject) {
-		if (isZero())
-			if (anObject instanceof IMoney)
-				return ((IMoney) anObject).isZero();
+		if (isZero() && anObject instanceof IMoney)
+			return ((IMoney) anObject).isZero();
 
 		if (anObject instanceof MoneyBag) {
 			MoneyBag aMoneyBag = (MoneyBag) anObject;
@@ -97,7 +96,7 @@ public class MoneyBag implements IMoney {
 	}
 
 	public boolean isZero() {
-		return fMonies.size() == 0;
+		return fMonies.isEmpty();
 	}
 
 	public IMoney multiply(int factor) {
@@ -127,12 +126,13 @@ public class MoneyBag implements IMoney {
 
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("{");
-		for (Money each : fMonies)
-			buffer.append(each);
-		buffer.append("}");
-		return buffer.toString();
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("{");
+		for (Money each : fMonies) {
+			strBuilder.append(each);
+		}
+		strBuilder.append("}");
+		return strBuilder.toString();
 	}
 
 	public void appendTo(MoneyBag m) {

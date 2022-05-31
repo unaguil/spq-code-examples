@@ -1,7 +1,8 @@
 package es.deusto.testing.junit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -80,19 +81,19 @@ public class MoneyTest {
 	@Test
 	public void testBagNotEquals() {
 		IMoney bag = MoneyBag.create(f12CHF, f7USD);
-		assertFalse(bag.equals(new Money(12, "DEM").add(f7USD)));
+		assertNotEquals(bag, new Money(12, "DEM").add(f7USD));
 	}
 
 	@Test
 	public void testMoneyBagEquals() {
-		assertTrue(!fMB1.equals(null));
+		assertNotNull(fMB1);
 
 		assertEquals(fMB1, fMB1);
-		IMoney equal = MoneyBag.create(new Money(12, "CHF"), new Money(7, "USD"));
-		assertTrue(fMB1.equals(equal));
-		assertTrue(!fMB1.equals(f12CHF));
-		assertTrue(!f12CHF.equals(fMB1));
-		assertTrue(!fMB1.equals(fMB2));
+		IMoney expected = MoneyBag.create(new Money(12, "CHF"), new Money(7, "USD"));
+		assertEquals(expected, fMB1);
+		assertNotEquals(fMB1, f12CHF);
+		assertNotEquals(f12CHF, fMB1);
+		assertNotEquals(fMB1,fMB2);
 	}
 
 	@Test
@@ -103,12 +104,12 @@ public class MoneyTest {
 
 	@Test
 	public void testMoneyEquals() {
-		assertTrue(!f12CHF.equals(null));
+		assertNotNull(f12CHF);
 		Money equalMoney = new Money(12, "CHF");
 		assertEquals(f12CHF, f12CHF);
 		assertEquals(f12CHF, equalMoney);
 		assertEquals(f12CHF.hashCode(), equalMoney.hashCode());
-		assertTrue(!f12CHF.equals(f14CHF));
+		assertNotEquals(f12CHF, f14CHF);
 	}
 
 	@Test
@@ -122,7 +123,7 @@ public class MoneyTest {
 
 	@Test
 	public void testMoneyHash() {
-		assertTrue(!f12CHF.equals(null));
+		assertNotNull(f12CHF);
 		Money equal = new Money(12, "CHF");
 		assertEquals(f12CHF.hashCode(), equal.hashCode());
 	}

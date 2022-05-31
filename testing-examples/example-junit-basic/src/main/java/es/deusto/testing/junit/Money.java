@@ -44,9 +44,8 @@ public class Money implements IMoney {
 
 	@Override
 	public boolean equals(Object anObject) {
-		if (isZero())
-			if (anObject instanceof IMoney)
-				return ((IMoney) anObject).isZero();
+		if (isZero() && anObject instanceof IMoney)
+			return ((IMoney) anObject).isZero();
 		if (anObject instanceof Money) {
 			Money aMoney = (Money) anObject;
 			return aMoney.currency().equals(currency()) && amount() == aMoney.amount();
@@ -79,9 +78,9 @@ public class Money implements IMoney {
 
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("[" + amount() + " " + currency() + "]");
-		return buffer.toString();
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("[" + amount() + " " + currency() + "]");
+		return strBuilder.toString();
 	}
 
 	public /* this makes no sense */ void appendTo(MoneyBag m) {
