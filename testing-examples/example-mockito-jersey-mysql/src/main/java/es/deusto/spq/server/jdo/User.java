@@ -54,6 +54,6 @@ public class User {
 		for (Message message: this.messages) {
 			messagesStr.append(message.toString() + " - ");
 		}
-        return "User: login --> " + this.login + ", password -->  " + this.password + ", messages --> [" + messagesStr + "]";
+        return "User: login --> " + this.login + ", password --> " + this.password + ", messages --> [" + messagesStr + "]";
     }
 }
