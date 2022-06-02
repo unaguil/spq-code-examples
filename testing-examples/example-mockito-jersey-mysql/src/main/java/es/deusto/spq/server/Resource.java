@@ -4,6 +4,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.JDOHelper;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.Transaction;
 
 import es.deusto.spq.server.jdo.User;
@@ -20,13 +21,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 @Path("/resource")
 @Produces(MediaType.APPLICATION_JSON)
 public class Resource {
 
+	private static final Logger logger = LogManager.getLogger(Resource.class);
+
 	private int cont = 0;
-	private PersistenceManager pm=null;
-	private Transaction tx=null;
+	private PersistenceManager pm = null;
+	private Transaction tx = null;
 
 	public Resource() {
 		PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
@@ -34,76 +41,79 @@ public class Resource {
 		this.tx = pm.currentTransaction();
 	}
 
+	Resource(PersistenceManager pm, Transaction tx) {
+		this.pm = pm;
+		this.tx = tx;
+	}
+
 	@POST
 	@Path("/sayMessage")
 	public Response sayMessage(DirectMessage directMessage) {
 		User user = null;
-		try{
+		try {
 			tx.begin();
-			System.out.println("Creating query ...");
-			
-			Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login == \"" + directMessage.getUserData().getLogin() + "\" &&  password == \"" + directMessage.getUserData().getPassword() + "\"");
+			logger.info("Creating query ...");
+
+			Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login = ? AND password = ?");
 			q.setUnique(true);
-			user = (User)q.execute();
-			
-			System.out.println("User retrieved: " + user);
-			if (user != null)  {
+			user = (User) q.execute(directMessage.getUserData().getLogin(), directMessage.getUserData().getPassword());
+
+			logger.info("User retrieved: {}", user);
+			if (user != null) {
 				Message message = new Message(directMessage.getMessageData().getMessage());
 				user.getMessages().add(message);
-				pm.makePersistent(user);					 
+				pm.makePersistent(user);
 			}
+			
 			tx.commit();
 		} finally {
 			if (tx.isActive()) {
 				tx.rollback();
 			}
 		}
-		
+
 		if (user != null) {
 			cont++;
-			System.out.println(" * Client number: " + cont);
+			logger.info(" * Client number: {} ", cont);
 			MessageData messageData = new MessageData();
 			messageData.setMessage(directMessage.getMessageData().getMessage());
 			return Response.ok(messageData).build();
 		} else {
-			return Response.status(Status.BAD_REQUEST).entity("Login details supplied for message delivery are not correct").build();
+			return Response.status(Status.BAD_REQUEST)
+					.entity("Login details supplied for message delivery are not correct").build();
 		}
 	}
-	
+
 	@POST
 	@Path("/register")
 	public Response registerUser(UserData userData) {
-		try
-        {	
-            tx.begin();
-            System.out.println("Checking whether the user already exits or not: '" + userData.getLogin() +"'");
+		try {
+			tx.begin();
+			logger.info("Checking whether the user already exits or not: '{}'", userData.getLogin());
 			User user = null;
 			try {
 				user = pm.getObjectById(User.class, userData.getLogin());
-			} catch (javax.jdo.JDOObjectNotFoundException jonfe) {
-				System.out.println("Exception launched: " + jonfe.getMessage());
+			} catch (JDOObjectNotFoundException jdonfe) {
+				logger.error("Exception launched:  {}", jdonfe.getMessage());
 			}
-			System.out.println("User: " + user);
+			
+			logger.info("User: {}", user);
 			if (user != null) {
-				System.out.println("Setting password user: " + user);
+				logger.info("Setting password user: {}", user);
 				user.setPassword(userData.getPassword());
-				System.out.println("Password set user: " + user);
+				logger.info("Password set user: {}", user);
 			} else {
-				System.out.println("Creating user: " + user);
+				logger.info("Creating user: {}", user);
 				user = new User(userData.getLogin(), userData.getPassword());
-				pm.makePersistent(user);					 
-				System.out.println("User created: " + user);
+				pm.makePersistent(user);
+				logger.info("User created: {}", user);
 			}
 			tx.commit();
 			return Response.ok().build();
-        }
-        finally
-        {
-            if (tx.isActive())
-            {
-                tx.rollback();
-            }
-      
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
 		}
 	}
 

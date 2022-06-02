@@ -5,7 +5,7 @@ public class MessageData {
     private String message;
 
     public MessageData() {
-        
+        // for serialization
     }
 
     public String getMessage() {
