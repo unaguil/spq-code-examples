@@ -32,7 +32,7 @@ public class CoffeeMachineTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		coffeeMachine = new CoffeeMachine(coffeeContainer, waterContainer);
 	}
 
