@@ -3,17 +3,21 @@ package es.deusto.spq.client;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import es.deusto.spq.pojo.DirectMessage;
 import es.deusto.spq.pojo.MessageData;
 import es.deusto.spq.pojo.UserData;
 
 public class ExampleClient {
+
+	private static final Logger logger = LogManager.getLogger(ExampleClient.class);
 
 	private Client client;
 	private WebTarget webTarget;
@@ -23,24 +27,29 @@ public class ExampleClient {
 		webTarget = client.target(String.format("http://%s:%s/rest/resource", hostname, port));
 	}
 
-	public void registerUser(String login, String password) {
+	ExampleClient(Client client, WebTarget webTarget) {
+		this.client = client;
+		this.webTarget = webTarget;
+	}
+
+	public boolean registerUser(String login, String password) {
 		WebTarget registerUserWebTarget = webTarget.path("register");
-		Invocation.Builder invocationBuilder = registerUserWebTarget.request(MediaType.APPLICATION_JSON);
-		
+	
 		UserData userData = new UserData();
 		userData.setLogin(login);
 		userData.setPassword(password);
-		Response response = invocationBuilder.post(Entity.entity(userData, MediaType.APPLICATION_JSON));
+		Response response = registerUserWebTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(userData, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
-			System.out.println("Error connecting with the server. Code: " + response.getStatus());
+			logger.info("Error connecting with the server. Code: {}", response.getStatus());
+			return false;
 		} else {
-			System.out.println("User correctly registered");
+			logger.info("User correctly registered");
+			return true;
 		}
 	}
 
-	public void sayMessage(String login, String password, String message) {
+	public boolean sayMessage(String login, String password, String message) {
 		WebTarget sayHelloWebTarget = webTarget.path("sayMessage");
-		Invocation.Builder invocationBuilder = sayHelloWebTarget.request(MediaType.APPLICATION_JSON);
 
 		DirectMessage directMessage = new DirectMessage();
 		UserData userData = new UserData();
@@ -53,12 +62,14 @@ public class ExampleClient {
 		messageData.setMessage(message);
 		directMessage.setMessageData(messageData);
 
-		Response response = invocationBuilder.post(Entity.entity(directMessage, MediaType.APPLICATION_JSON));
+		Response response = sayHelloWebTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(directMessage, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
-			System.out.println("Error connecting with the server. Code: " + response.getStatus());
+			logger.info("Error connecting with the server. Code: {}", response.getStatus());
+			return false;
 		} else {
 			String responseMessage = response.readEntity(String.class);
-			System.out.println("* Message coming from the server: '" + responseMessage + "'");
+			logger.info("* Message coming from the server: {}",  responseMessage);
+			return true;
 		}
 	}
 
