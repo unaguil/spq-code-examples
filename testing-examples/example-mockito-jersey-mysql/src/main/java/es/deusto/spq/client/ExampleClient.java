@@ -27,11 +27,6 @@ public class ExampleClient {
 		webTarget = client.target(String.format("http://%s:%s/rest/resource", hostname, port));
 	}
 
-	ExampleClient(Client client, WebTarget webTarget) {
-		this.client = client;
-		this.webTarget = webTarget;
-	}
-
 	public boolean registerUser(String login, String password) {
 		WebTarget registerUserWebTarget = webTarget.path("register");
 	

@@ -41,11 +41,6 @@ public class Resource {
 		this.tx = pm.currentTransaction();
 	}
 
-	Resource(PersistenceManager pm, Transaction tx) {
-		this.pm = pm;
-		this.tx = tx;
-	}
-
 	@POST
 	@Path("/sayMessage")
 	public Response sayMessage(DirectMessage directMessage) {

@@ -8,14 +8,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.ObjectInputFilter.Status;
-
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.StatusType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +21,8 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import es.deusto.spq.pojo.DirectMessage;
@@ -48,7 +48,14 @@ public class ExampleClientTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        exampleClient = new ExampleClient(client, webTarget);
+
+        // prepare static mock of ClientBuilder
+        try (MockedStatic<ClientBuilder> clientBuilder = Mockito.mockStatic(ClientBuilder.class)) {
+            clientBuilder.when(ClientBuilder::newClient).thenReturn(client);
+            when(client.target("http://localhost:8080/rest/resource")).thenReturn(webTarget);
+
+            exampleClient = new ExampleClient("localhost", "8080");
+        }
     }
 
     @Test
