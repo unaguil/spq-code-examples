@@ -6,7 +6,7 @@ public class UserData {
     private String password;
 
     public UserData() {
-
+        // required by serialization
     }
 
     public String getLogin() {

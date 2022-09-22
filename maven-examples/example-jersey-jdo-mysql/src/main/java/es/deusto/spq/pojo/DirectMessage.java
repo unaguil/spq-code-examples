@@ -6,7 +6,7 @@ public class DirectMessage {
     private MessageData messageData;
 
     public DirectMessage() {
-
+        // required by serialization
     }
 
     public void setUserData(UserData userData) {

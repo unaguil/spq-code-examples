@@ -28,6 +28,9 @@ import javax.jdo.Query;
 import javax.jdo.JDOHelper;
 import javax.jdo.Transaction;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Controlling application for the DataNucleus Tutorial using JDO.
  * Relies on the user defining a file "datanucleus.properties" to be in the CLASSPATH
@@ -38,15 +41,17 @@ import javax.jdo.Transaction;
  */
 public class Main
 {
+    protected static final Logger logger = LogManager.getLogger();
+
     @SuppressWarnings("unchecked")
-	public static void main(String args[])
+	public static void main(String[] args)
     {
-    	System.out.println("Starting ....");
+    	logger.info("Starting ....");
         // Create a PersistenceManagerFactory for this datastore
         PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
 
-        System.out.println("DataNucleus AccessPlatform with JDO");
-        System.out.println("===================================");
+        logger.info("DataNucleus AccessPlatform with JDO");
+        logger.info("===================================");
 
         // Persistence of a Product and a Book.
         PersistenceManager pm = pmf.getPersistenceManager();
@@ -54,14 +59,14 @@ public class Main
         try
         {
             tx.begin();
-            System.out.println("Persisting products");
+            logger.info("Persisting products");
             Product product = new Product("Sony Discman","A standard discman from Sony",200.00);
             Book book = new Book("Lord of the Rings by Tolkien","The classic story",49.99,"JRR Tolkien", "12345678", "MyBooks Factory");
             pm.makePersistent(product);
             pm.makePersistent(book);
  
             tx.commit();
-            System.out.println("Product and Book have been persisted");
+            logger.info("Product and Book have been persisted");
         }
         finally
         {
@@ -71,7 +76,7 @@ public class Main
             }
             pm.close();
         }
-        System.out.println("");
+        logger.info("");
 
         // Basic Extent of all Products
         pm = pmf.getPersistenceManager();
@@ -79,19 +84,19 @@ public class Main
         try
         {
             tx.begin();
-            System.out.println("Retrieving Extent for Products");
+            logger.info("Retrieving Extent for Products");
             Extent<Product> e = pm.getExtent(Product.class, true);
             Iterator<Product> iter = e.iterator();
             while (iter.hasNext())
             {
                 Object obj = iter.next();
-                System.out.println(">  " + obj);
+                logger.info("> {}", obj);
             }
             tx.commit();
         }
         catch (Exception e)
         {
-            System.out.println("Exception thrown during retrieval of Extent : " + e.getMessage());
+            logger.info("Exception thrown during retrieval of Extent: {}", e.getMessage());
         }
         finally
         {
@@ -101,7 +106,7 @@ public class Main
             }
             pm.close();
         }
-        System.out.println("");
+        logger.info("");
 
         // Perform some query operations
         pm = pmf.getPersistenceManager();
@@ -109,21 +114,24 @@ public class Main
         try
         {
             tx.begin();
-            System.out.println("Executing Query for Products with price below 150.00");
-            Extent<Product> e=pm.getExtent(Product.class,true);
-            Query<Product> q=pm.newQuery(e, "price < 150.00");
-            q.setOrdering("price ascending");
-                        
-            for (Product product : (List<Product>)q.execute()) {
-            	System.out.println(">  " + product);
-            	if (product instanceof Book)
-                {
-                    Book b = (Book)product;
-                    // Give an example of an update
-                    b.setDescription("This book has been reduced in price!");
-                    System.out.println("This book has been reduced in price!");
+            logger.info("Executing Query for Products with price below 150.00");
+            Extent<Product> e = pm.getExtent(Product.class,true);
+            try (Query<Product> q = pm.newQuery(e, "price < 150.00")) {
+                q.setOrdering("price ascending");
+                            
+                for (Product product : (List<Product>)q.execute()) {
+                    logger.info("> {}", product);
+                    if (product instanceof Book)
+                    {
+                        Book b = (Book)product;
+                        // Give an example of an update
+                        b.setDescription("This book has been reduced in price!");
+                        logger.info("This book has been reduced in price!");
+                    }
+        
                 }
-    
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             tx.commit();
@@ -136,7 +144,7 @@ public class Main
             }
             pm.close();
         }
-        System.out.println("");
+        logger.info("");
 
         // Clean out the database
         pm = pmf.getPersistenceManager();
@@ -144,10 +152,13 @@ public class Main
         try
         {
             tx.begin();
-            System.out.println("Deleting all products from persistence");
-            Query<Product> q = pm.newQuery(Product.class);
-            long numberInstancesDeleted = q.deletePersistentAll();
-            System.out.println("Deleted " + numberInstancesDeleted + " products");
+            logger.info("Deleting all products from persistence");
+            try (Query<Product> q = pm.newQuery(Product.class)) {
+                long numberInstancesDeleted = q.deletePersistentAll();
+                logger.info("Deleted {} products", numberInstancesDeleted);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             tx.commit();
         }
@@ -160,8 +171,8 @@ public class Main
             pm.close();
         }
 
-        System.out.println("");
-        System.out.println("End of Tutorial");
+        logger.info("");
+        logger.info("End of Tutorial");
 		pmf.close();
     }
 }

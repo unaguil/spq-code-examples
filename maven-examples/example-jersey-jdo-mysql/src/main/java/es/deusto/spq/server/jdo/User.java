@@ -16,7 +16,7 @@ public class User {
 	
 	@Persistent(mappedBy="user", dependentElement="true")
 	@Join
-	Set<Message> messages = new HashSet<Message>();
+	Set<Message> messages = new HashSet<>();
 	
 	
 	
@@ -48,7 +48,7 @@ public class User {
 	 public Set<Message> getMessages() {return this.messages;}
 	 
 	 public String toString() {
-		StringBuffer messagesStr = new StringBuffer();
+		StringBuilder messagesStr = new StringBuilder();
 		for (Message message: this.messages) {
 			messagesStr.append(message.toString() + " - ");
 		}

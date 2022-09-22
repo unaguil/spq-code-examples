@@ -31,7 +31,9 @@ import javax.jdo.Transaction;
 // To support resource bundle
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Controlling application for the DataNucleus Tutorial using JDO.
@@ -43,13 +45,15 @@ import java.util.logging.Logger;
  */
 public class Main
 {
-	private static final Logger logger = Logger.getLogger("Main");
+    private static final String SYSTEM_MESSAGES = "SystemMessages";
+    private static final Logger logger = LogManager.getLogger();
+    
     @SuppressWarnings("unchecked")
-	public static void main(String args[])
+	public static void main(String[] args)
     {
 		// ResourceBundle class will use SystemMessages.properties file
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("SystemMessages", Locale.getDefault());
-		resourceBundle = ResourceBundle.getBundle("SystemMessages",	Locale.forLanguageTag("en"));
+		ResourceBundle resourceBundle = ResourceBundle.getBundle(SYSTEM_MESSAGES, Locale.getDefault());
+		resourceBundle = ResourceBundle.getBundle(SYSTEM_MESSAGES,	Locale.forLanguageTag("en"));
 
 		logger.info(resourceBundle.getString("starting_msg"));
 			
@@ -87,7 +91,7 @@ public class Main
         pm = pmf.getPersistenceManager();
         tx = pm.currentTransaction();
 		// changing to Spanish now
-		resourceBundle = ResourceBundle.getBundle("SystemMessages",	Locale.forLanguageTag("es"));
+		resourceBundle = ResourceBundle.getBundle(SYSTEM_MESSAGES,	Locale.forLanguageTag("es"));
         try
         {
             tx.begin();
@@ -97,13 +101,13 @@ public class Main
             while (iter.hasNext())
             {
                 Object obj = iter.next();
-                logger.info(">  " + obj);
+                logger.info("> {}", obj);
             }
             tx.commit();
         }
         catch (Exception e)
         {
-			logger.info(resourceBundle.getString("retrieving_exception_msg") + e.getMessage());
+			logger.info("{} {}", resourceBundle.getString("retrieving_exception_msg"), e.getMessage());
         }
         finally
         {
@@ -113,7 +117,6 @@ public class Main
             }
             pm.close();
         }
-        System.out.println("");
 
         // Perform some query operations
         pm = pmf.getPersistenceManager();
@@ -122,22 +125,25 @@ public class Main
         {
             tx.begin();
 			logger.info(resourceBundle.getString("executing_query_msg"));
-            Extent<Product> e=pm.getExtent(Product.class,true);
-            Query<Product> q=pm.newQuery(e, "price < 150.00");
-			q.setOrdering("price ascending");                        
-            for (Product product : (List<Product>)q.execute()) {
-            	logger.info(">  " + product);
-            	if (product instanceof Book)
-                {
-                    Book b = (Book)product;
-                    // Give an example of an update
-                    b.setDescription(resourceBundle.getString("price_reduced_msg"));
-                    logger.info(resourceBundle.getString("price_reduced_msg"));
+            Extent<Product> e = pm.getExtent(Product.class,true);
+            try (Query<Product> q = pm.newQuery(e, "price < 150.00")) {
+                q.setOrdering("price ascending");                        
+                for (Product product : (List<Product>)q.execute()) {
+                    logger.info("> {}", product);
+                    if (product instanceof Book)
+                    {
+                        Book b = (Book)product;
+                        // Give an example of an update
+                        b.setDescription(resourceBundle.getString("price_reduced_msg"));
+                        logger.info(resourceBundle.getString("price_reduced_msg"));
+                    }
+        
                 }
-    
-            }
 
-            tx.commit();
+                tx.commit();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         finally
         {
@@ -149,7 +155,7 @@ public class Main
         }
         
 		// changing to Basque now
-		resourceBundle = ResourceBundle.getBundle("SystemMessages",	Locale.forLanguageTag("eu"));
+		resourceBundle = ResourceBundle.getBundle(SYSTEM_MESSAGES,	Locale.forLanguageTag("eu"));
 		
 		
         // Clean out the database
@@ -159,11 +165,14 @@ public class Main
         {
             tx.begin();
             logger.info(resourceBundle.getString("deleting_products_msg"));
-            Query<Product> q = pm.newQuery(Product.class);
-            long numberInstancesDeleted = q.deletePersistentAll();
-            logger.info(resourceBundle.getString("deleted_msg") + numberInstancesDeleted + resourceBundle.getString("products_msg"));
+            try (Query<Product> q = pm.newQuery(Product.class)) {
+                long numberInstancesDeleted = q.deletePersistentAll();
+                logger.info("{} {} {}", resourceBundle.getString("deleted_msg"), numberInstancesDeleted, resourceBundle.getString("products_msg"));
 
-            tx.commit();
+                tx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         finally
         {
