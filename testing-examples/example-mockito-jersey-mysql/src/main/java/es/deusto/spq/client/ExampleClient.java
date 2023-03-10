@@ -17,7 +17,10 @@ import es.deusto.spq.pojo.UserData;
 
 public class ExampleClient {
 
-	private static final Logger logger = LogManager.getLogger(ExampleClient.class);
+	private static final Logger logger = LogManager.getLogger();
+
+	private static final String USER = "dipina";
+	private static final String PASSWORD = "dipina";
 
 	private Client client;
 	private WebTarget webTarget;
@@ -70,7 +73,7 @@ public class ExampleClient {
 
 	public static void main(String[] args) {
 		if (args.length != 2) {
-			System.out.println("Use: java Client.Client [host] [port]");
+			logger.error("Use: java Client.Client [host] [port]");
 			System.exit(0);
 		}
 
@@ -78,7 +81,7 @@ public class ExampleClient {
 		String port = args[1];
 
 		ExampleClient exampleClient = new ExampleClient(hostname, port);
-		exampleClient.registerUser("dipina", "dipina");
-		exampleClient.sayMessage("dipina", "dipina", "This is a test!...");
+		exampleClient.registerUser(USER, PASSWORD);
+		exampleClient.sayMessage(USER, PASSWORD, "This is a test!...");
 	}
 }

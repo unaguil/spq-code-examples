@@ -1,22 +1,19 @@
-Jersey + Datanucleus + MySQL
+Jersey + DataNucleus + MySQL
 ============================
 
-This example relies on the DataNucleus Maven plugin. Check the database configuration in the *datanucleus.properties* file and the JDBC driver dependency specified in the *pom.xml* file.
+This example relies on the DataNucleus Maven plugin. Check the database configuration in the *datanucleus.properties* file and the JDBC driver dependency specified in the *pom.xml* file. In addition, the project contains the server and client example codes.
 
-In addition, the project contains the server and client example codes.
-First, the server and client can be compiled using
+Run the following command to build everything and enhance the DB classes:
 
-Run the following command to build everything and enhancing the DB classes:
-
-   mvn compile
+      mvn clean compile
 
 Make sure that the database was correctly configured. Use the contents of the file *create-message.sql* to create the database and grant privileges. For example,
 
-   mysql –uroot < create-messages.sql
+      mysql –uroot -p < sql/create-messages.sql
 
 Run the following command to create database schema for this sample.
 
-   mvn datanucleus:schema-create
+      mvn datanucleus:schema-create
 
 To launch the server run the command
 

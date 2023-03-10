@@ -49,15 +49,19 @@ public class Resource {
 			tx.begin();
 			logger.info("Creating query ...");
 
-			Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login = ? AND password = ?");
-			q.setUnique(true);
-			user = (User) q.execute(directMessage.getUserData().getLogin(), directMessage.getUserData().getPassword());
+			try (Query<?> q = pm.newQuery(User.class)) {
+				q.setFilter("this.name == ?1 && this.password == ?2");
+				q.setUnique(true);
+				user = (User) q.execute(directMessage.getUserData().getLogin(), directMessage.getUserData().getPassword());
 
-			logger.info("User retrieved: {}", user);
-			if (user != null) {
-				Message message = new Message(directMessage.getMessageData().getMessage());
-				user.getMessages().add(message);
-				pm.makePersistent(user);
+				logger.info("User retrieved: {}", user);
+				if (user != null) {
+					Message message = new Message(directMessage.getMessageData().getMessage());
+					user.getMessages().add(message);
+					pm.makePersistent(user);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
 			tx.commit();

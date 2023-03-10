@@ -8,7 +8,7 @@
 	<artifactId>datanucleus-jdo-mysql</artifactId>
 	<packaging>jar</packaging>
 	<version>3.0</version>
-	<name>Datanucleus + MySQL</name>
+	<name>DataNucleus + MySQL</name>
 	<url>http://www.datanucleus.org</url>
 
 	<properties>

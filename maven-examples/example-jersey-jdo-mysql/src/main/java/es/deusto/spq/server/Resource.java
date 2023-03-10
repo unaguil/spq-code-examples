@@ -20,9 +20,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 @Path("/resource")
 @Produces(MediaType.APPLICATION_JSON)
 public class Resource {
+
+	protected static final Logger logger = LogManager.getLogger();
 
 	private int cont = 0;
 	private PersistenceManager pm=null;
@@ -40,17 +45,20 @@ public class Resource {
 		User user = null;
 		try{
 			tx.begin();
-			System.out.println("Creating query ...");
+			logger.info("Creating query ...");
 			
-			Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login == \"" + directMessage.getUserData().getLogin() + "\" &&  password == \"" + directMessage.getUserData().getPassword() + "\"");
-			q.setUnique(true);
-			user = (User)q.execute();
-			
-			System.out.println("User retrieved: " + user);
-			if (user != null)  {
-				Message message = new Message(directMessage.getMessageData().getMessage());
-				user.getMessages().add(message);
-				pm.makePersistent(user);					 
+			try (Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login == \"" + directMessage.getUserData().getLogin() + "\" &&  password == \"" + directMessage.getUserData().getPassword() + "\"")) {
+				q.setUnique(true);
+				user = (User)q.execute();
+				
+				logger.info("User retrieved: {}", user);
+				if (user != null)  {
+					Message message = new Message(directMessage.getMessageData().getMessage());
+					user.getMessages().add(message);
+					pm.makePersistent(user);					 
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			tx.commit();
 		} finally {
@@ -61,7 +69,7 @@ public class Resource {
 		
 		if (user != null) {
 			cont++;
-			System.out.println(" * Client number: " + cont);
+			logger.info(" * Client number: {}", cont);
 			MessageData messageData = new MessageData();
 			messageData.setMessage(directMessage.getMessageData().getMessage());
 			return Response.ok(messageData).build();
@@ -76,23 +84,23 @@ public class Resource {
 		try
         {	
             tx.begin();
-            System.out.println("Checking whether the user already exits or not: '" + userData.getLogin() +"'");
+            logger.info("Checking whether the user already exits or not: '{}'", userData.getLogin());
 			User user = null;
 			try {
 				user = pm.getObjectById(User.class, userData.getLogin());
 			} catch (javax.jdo.JDOObjectNotFoundException jonfe) {
-				System.out.println("Exception launched: " + jonfe.getMessage());
+				logger.info("Exception launched: {}", jonfe.getMessage());
 			}
-			System.out.println("User: " + user);
+			logger.info("User: {}", user);
 			if (user != null) {
-				System.out.println("Setting password user: " + user);
+				logger.info("Setting password user: {}", user);
 				user.setPassword(userData.getPassword());
-				System.out.println("Password set user: " + user);
+				logger.info("Password set user: {}", user);
 			} else {
-				System.out.println("Creating user: " + user);
+				logger.info("Creating user: {}", user);
 				user = new User(userData.getLogin(), userData.getPassword());
 				pm.makePersistent(user);					 
-				System.out.println("User created: " + user);
+				logger.info("User created: {}", user);
 			}
 			tx.commit();
 			return Response.ok().build();

@@ -127,6 +127,7 @@ public class Book extends Product
 	 * String representation of a Book object instance
 	 * @return The String corresponding to the string representation of a Book instance
 	 */
+	@Override
     public String toString()
     {
         return "Book : " + author + " - " + name;

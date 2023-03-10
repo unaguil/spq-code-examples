@@ -13,7 +13,16 @@ import es.deusto.spq.pojo.DirectMessage;
 import es.deusto.spq.pojo.MessageData;
 import es.deusto.spq.pojo.UserData;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ExampleClient {
+
+	protected static final Logger logger = LogManager.getLogger();
+
+	private static final String USER = "dipina";
+	private static final String PASSWORD = "dipina";
+
 
 	private Client client;
 	private WebTarget webTarget;
@@ -32,9 +41,9 @@ public class ExampleClient {
 		userData.setPassword(password);
 		Response response = invocationBuilder.post(Entity.entity(userData, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
-			System.out.println("Error connecting with the server. Code: " + response.getStatus());
+			logger.error("Error connecting with the server. Code: {}", response.getStatus());
 		} else {
-			System.out.println("User correctly registered");
+			logger.info("User correctly registered");
 		}
 	}
 
@@ -55,16 +64,16 @@ public class ExampleClient {
 
 		Response response = invocationBuilder.post(Entity.entity(directMessage, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
-			System.out.println("Error connecting with the server. Code: " + response.getStatus());
+			logger.error("Error connecting with the server. Code: {}",response.getStatus());
 		} else {
 			String responseMessage = response.readEntity(String.class);
-			System.out.println("* Message coming from the server: '" + responseMessage + "'");
+			logger.info("* Message coming from the server: '{}'", responseMessage);
 		}
 	}
 
 	public static void main(String[] args) {
 		if (args.length != 2) {
-			System.out.println("Use: java Client.Client [host] [port]");
+			logger.info("Use: java Client.Client [host] [port]");
 			System.exit(0);
 		}
 
@@ -72,7 +81,7 @@ public class ExampleClient {
 		String port = args[1];
 
 		ExampleClient exampleClient = new ExampleClient(hostname, port);
-		exampleClient.registerUser("dipina", "dipina");
-		exampleClient.sayMessage("dipina", "dipina", "This is a test!...");
+		exampleClient.registerUser(USER, PASSWORD);
+		exampleClient.sayMessage(USER, PASSWORD, "This is a test!...");
 	}
 }
