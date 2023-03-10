@@ -38,8 +38,8 @@ Finally, run the following command to execute the application from the command l
 
 (Windows classpath separator ;)
 
-      java -cp "target/jars/*";target/datanucleus-jdo-mysql-i18n-3.0.jar org.datanucleus.samples.jdo.tutorial.Main
+      java -cp "target/jars/*;target/datanucleus-jdo-mysql-i18n-3.0.jar" org.datanucleus.samples.jdo.tutorial.Main
 
 (Linux classpath separator :)
 
-      java -cp "target/jars/*":target/datanucleus-jdo-mysql-i18n-3.0.jar org.datanucleus.samples.jdo.tutorial.Main
+      java -cp "target/jars/*:target/datanucleus-jdo-mysql-i18n-3.0.jar" org.datanucleus.samples.jdo.tutorial.Main
