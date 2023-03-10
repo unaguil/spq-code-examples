@@ -21,11 +21,11 @@ Create the distributable version of the compiled code (JAR)
 
 The packaged version will be written to the *target* folder and can be runned adding the generated JAR to the classpath and specifying the main class to be launched
 
-    java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
+    java -cp target/example-maven-basic-1.0-SNAPSHOT.jar com.mycompany.app.App
 
 In addition, if you open the generated .jar file (with a file compressing tool) you can see that the *application.properties* file has been copied to the root of the .jar file and its properties have been substituted with the actual values during the build process.
 
-Furthermore, we could provide specific values for those process during the build process adding the following property and checking the JAR again
+Furthermore, we could provide specific values for those properties which are processed during the build phase. Let's add the following property and checking the JAR again
 
     mvn package -Dcommand.line.prop="hello again"
 
