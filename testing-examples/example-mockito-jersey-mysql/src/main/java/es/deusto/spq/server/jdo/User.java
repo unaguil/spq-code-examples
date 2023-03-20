@@ -6,7 +6,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Join;
 import javax.jdo.annotations.Persistent;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 @PersistenceCapable
 public class User {
@@ -16,7 +16,7 @@ public class User {
 	
 	@Persistent(mappedBy="user", dependentElement="true")
 	@Join
-	Set<Message> messages = new HashSet<>();
+	Set<Message> messages = new LinkedHashSet<>();
 	
 	User() {
 
