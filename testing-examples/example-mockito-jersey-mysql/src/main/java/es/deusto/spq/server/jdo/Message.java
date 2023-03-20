@@ -1,18 +1,19 @@
 package es.deusto.spq.server.jdo;
 
 import javax.jdo.annotations.PersistenceCapable;
-import java.util.Date;
+
+import java.time.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
 
 @PersistenceCapable
 public class Message {
 	User user=null;
 	String text=null;
-	long timestamp;
-	
+	ZonedDateTime timestamp;
 
     public Message(String text) {
         this.text = text;
-		this.timestamp = System.currentTimeMillis();
+		this.timestamp = ZonedDateTime.now();
     }
 
 	public User getUser() {
@@ -24,6 +25,7 @@ public class Message {
     }
 
     public String toString() {
-        return "Message: message --> " + this.text + ", timestamp -->  " + new Date(this.timestamp);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        return "Message: message --> " + this.text + ", timestamp -->  " + formatter.format(timestamp);
     }
 }
