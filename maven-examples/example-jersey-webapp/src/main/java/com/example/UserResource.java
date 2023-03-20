@@ -18,10 +18,15 @@ import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.example.pojo.User;
 
 @Path("users")
 public class UserResource {
+
+    protected static final Logger logger = LogManager.getLogger();
 
     public enum Order {
         ASC,
@@ -68,7 +73,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
         // here we will process the received user data
-        System.out.println("Adding a new user: " + user.getName() + " " + user.getSurname());
+        logger.info("Adding a new user: {} {}", user.getName(), user.getSurname());
         // return a response containing a user with only the code for the new user
         return Response.ok(new User(15)).build();
     }
@@ -77,7 +82,7 @@ public class UserResource {
     @Path("/{code}")
     public Response deleteUser(@PathParam("code") int code) {
         if (code == 10) {
-            System.out.println("Deleting user...");
+            logger.info("Deleting user {} ...", code);
             return Response.status(Response.Status.OK).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
