@@ -68,8 +68,7 @@ public class ResourceTest {
     public void testSayMessage() {
         // prepare a mock query object to be returned by
         // mock persistence manager
-        @SuppressWarnings("unchecked")
-        Query<User> query = mock(Query.class);
+        @SuppressWarnings("unchecked") Query<User> query = mock(Query.class);
         when(persistenceManager.newQuery(User.class)).thenReturn(query);
         
         // prepare response when execute method on mock Query object is
@@ -103,8 +102,8 @@ public class ResourceTest {
     public void testSayMessageUserNotFound() {
         // prepare a mock query object to be returned by
         // mock persistence manager
-        Query<?> query = mock(Query.class);
-        when(persistenceManager.newQuery(anyString())).thenReturn(query);
+        @SuppressWarnings("unchecked") Query<User> query = mock(Query.class);
+        when(persistenceManager.newQuery(User.class)).thenReturn(query);
         
         // simulate that the object is not found in the database
         when(query.execute(anyString(), anyString())).thenReturn(null);
