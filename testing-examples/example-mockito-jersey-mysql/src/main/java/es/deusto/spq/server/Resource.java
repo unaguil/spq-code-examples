@@ -50,7 +50,7 @@ public class Resource {
 			logger.info("Creating query ...");
 
 			try (Query<?> q = pm.newQuery(User.class)) {
-				q.setFilter("this.name == ?1 && this.password == ?2");
+				q.setFilter("this.login == :login && this.password == :password");
 				q.setUnique(true);
 				user = (User) q.execute(directMessage.getUserData().getLogin(), directMessage.getUserData().getPassword());
 
