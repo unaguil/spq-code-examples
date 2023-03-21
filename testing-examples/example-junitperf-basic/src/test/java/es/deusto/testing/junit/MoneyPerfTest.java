@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.github.noconnor.junitperf.JUnitPerfRule;
 import com.github.noconnor.junitperf.JUnitPerfTest;
+import com.github.noconnor.junitperf.reporting.providers.HtmlReportGenerator;
 
 import org.junit.Rule;
 
@@ -28,7 +29,7 @@ public class MoneyPerfTest {
 	private static final Logger logger = LogManager.getLogger(MoneyPerfTest.class);
 
 	@Rule 
-	public JUnitPerfRule perfTestRule = new JUnitPerfRule();
+	public JUnitPerfRule perfTestRule = new JUnitPerfRule(new HtmlReportGenerator("target/junitperf/report.html"));
 	
 	public static junit.framework.Test suite() {
 		 return new JUnit4TestAdapter(MoneyPerfTest.class);
