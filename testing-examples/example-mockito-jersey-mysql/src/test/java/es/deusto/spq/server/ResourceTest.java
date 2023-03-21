@@ -1,6 +1,7 @@
 package es.deusto.spq.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -92,6 +93,16 @@ public class ResourceTest {
         // call tested method
         Response response = resource.sayMessage(directMessage);
 
+        //verify that the filter is set with the correct value
+        ArgumentCaptor<String> filterCaptor = ArgumentCaptor.forClass(String.class);
+        verify(query).setFilter(filterCaptor.capture());
+        assertEquals("this.login == :login && this.password == :password", filterCaptor.getValue());
+
+        //verify that the unique is set to true
+        ArgumentCaptor<Boolean> uniqueCaptor = ArgumentCaptor.forClass(Boolean.class);
+        verify(query).setUnique(uniqueCaptor.capture());
+        assertTrue(uniqueCaptor.getValue());
+        
         // check expected response
         assertEquals(Response.Status.OK, response.getStatusInfo());
         MessageData responseData = (MessageData) response.getEntity();

@@ -79,7 +79,7 @@ public class Resource {
 			return Response.ok(messageData).build();
 		} else {
 			return Response.status(Status.BAD_REQUEST)
-					.entity("Login details supplied for message delivery are not correct").build();
+				.entity("Login details supplied for message delivery are not correct").build();
 		}
 	}
 
