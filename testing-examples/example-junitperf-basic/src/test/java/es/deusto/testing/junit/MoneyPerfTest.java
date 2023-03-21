@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.github.noconnor.junitperf.JUnitPerfRule;
 import com.github.noconnor.junitperf.JUnitPerfTest;
+import com.github.noconnor.junitperf.JUnitPerfTestRequirement;
 import com.github.noconnor.junitperf.reporting.providers.HtmlReportGenerator;
 
 import org.junit.Rule;
@@ -48,7 +49,8 @@ public class MoneyPerfTest {
 	}
 	
 	@Test 
-    @JUnitPerfTest(threads = 5, durationMs = 2000)
+    @JUnitPerfTest(threads = 20, durationMs = 2000)
+	@JUnitPerfTestRequirement(meanLatency = 100)
 	public void testBagMultiply() throws Exception {
 		logger.info("Starting testBagMultiply");
 		// {[12 CHF][7 USD]} *2 == {[24 CHF][14 USD]}
