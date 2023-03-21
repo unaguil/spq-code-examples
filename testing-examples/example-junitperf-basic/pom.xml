@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.mycompany.app</groupId>
-  <artifactId>example-maven-basic</artifactId>
+  <artifactId>example-junitperf-basic</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>example-maven-basic</name>
+  <name>example-junitperf-basic</name>
   <url>http://www.example.com</url>
 
   <properties>
