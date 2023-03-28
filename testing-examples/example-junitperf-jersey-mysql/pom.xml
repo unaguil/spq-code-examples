@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>org.datanucleus</groupId>
-	<artifactId>mockito-jersey-jdo-mysql</artifactId>
+	<artifactId>example-junitperf-jersey-jdo-mysql</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Mockito + Jersey + DataNucleus + MySQL</name>
@@ -69,6 +69,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-grizzly2-http</artifactId>
+		</dependency>
+
+		<dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
         </dependency>
@@ -93,6 +98,11 @@
 			<version>4.6.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+      		<groupId>com.github.noconnor</groupId>
+      		<artifactId>junitperf</artifactId>
+      		<version>1.22.1</version>
+    	</dependency>
 	</dependencies>
 
 	<build>
@@ -198,6 +208,17 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+       			<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-surefire-plugin</artifactId>
+        		<version>3.0.0</version>
+        		<configuration>
+          			<!-- Allow JUnitPerf to access the test classes in JDK 17 -->
+          			<argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+					<excludedGroups>categories.IntegrationTest, categories.PerformanceTest</excludedGroups>
+        		</configuration>
+      		</plugin>
 		</plugins>
 	</build>
 
@@ -227,6 +248,32 @@
                     </plugin>
                 </plugins>
             </build>
+		</profile>
+
+		<profile>
+			<id>integration-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.22.0</version>
+						<configuration>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<groups>categories.IntegrationTest, categories.PerformanceTest</groups>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

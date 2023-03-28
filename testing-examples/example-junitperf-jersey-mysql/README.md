@@ -1,7 +1,7 @@
-Mockito + Jersey + DataNucleus + MySQL
-======================================
+JUnitPerf + Mockito + Jersey + DataNucleus + MySQL
+==================================================
 
-This example shows how to use Mockito to perform tests of the different classes and components of the project.
+This example shows how to use JUnitPerf to test the performance of the REST API.
 
 Run the following command to compile all classes and launch the unit tests:
 
@@ -21,6 +21,11 @@ Therefore, execute the following command to enhance the database classes
 Run the following command to create database schema for this sample.
 
       mvn datanucleus:schema-create
+
+Performance tests can be launched using the following command (the server will be automatically launched for the tests an a
+data fixture will be added to perform the tests)
+
+      mvn verify -Pintegration-tests
 
 To launch the server run the command
 
