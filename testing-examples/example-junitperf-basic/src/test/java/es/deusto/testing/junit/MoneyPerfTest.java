@@ -36,7 +36,8 @@ public class MoneyPerfTest {
 		 return new JUnit4TestAdapter(MoneyPerfTest.class);
 	}
 
-	@Before public void setUp() {
+	@Before 
+	public void setUp() {
 		logger.info("Entering setUp");
 		f12CHF= new Money(12, "CHF");
 		f14CHF= new Money(14, "CHF");
@@ -62,7 +63,8 @@ public class MoneyPerfTest {
 		logger.debug("Finishing testBagMultiply");
 	}
 
-	@Test 
+	@Test
+	@JUnitPerfTest(threads = 10, durationMs =  2000) 
 	public void testBagNegate() {
 		// {[12 CHF][7 USD]} negate == {[-12 CHF][-7 USD]}
 		IMoney expected= MoneyBag.create(new Money(-12, "CHF"), new Money(-7, "USD"));
