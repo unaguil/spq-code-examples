@@ -22,8 +22,7 @@ Run the following command to create database schema for this sample.
 
       mvn datanucleus:schema-create
 
-Performance tests can be launched using the following command (the server will be automatically launched for the tests an a
-data fixture will be added to perform the tests)
+Performance tests can be launched using the following command (a Grizzly server will be automatically launched with some test data)
 
       mvn verify -Pintegration-tests
 
