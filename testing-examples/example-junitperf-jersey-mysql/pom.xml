@@ -150,9 +150,11 @@
 				<artifactId>datanucleus-maven-plugin</artifactId>
 				<version>6.0.0-release</version>
 				<configuration>
-					<api>JDO</api>
+					<api>JDO</api> 
 					<verbose>true</verbose>
 					<props>${config.files.dir}/datanucleus.properties</props>
+					<!-- option required to avoid 'The command line is too long.' error in Windows -->
+					<fork>false</fork>
 				</configuration>
 			</plugin>
 
