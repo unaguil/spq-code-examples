@@ -28,7 +28,6 @@ import com.github.noconnor.junitperf.JUnitPerfRule;
 import com.github.noconnor.junitperf.JUnitPerfTest;
 import com.github.noconnor.junitperf.reporting.providers.HtmlReportGenerator;
 
-import categories.IntegrationTest;
 import categories.PerformanceTest;
 import es.deusto.spq.pojo.DirectMessage;
 import es.deusto.spq.pojo.MessageData;
@@ -36,8 +35,8 @@ import es.deusto.spq.pojo.UserData;
 import es.deusto.spq.server.jdo.Message;
 import es.deusto.spq.server.jdo.User;
 
-@Category({ IntegrationTest.class, PerformanceTest.class })
-public class ResourcePerfTest {
+@Category(PerformanceTest.class)
+public class ServerPerformanceTest {
 
     private static final PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
     

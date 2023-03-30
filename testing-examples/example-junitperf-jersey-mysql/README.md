@@ -22,14 +22,20 @@ Run the following command to create database schema for this sample.
 
       mvn datanucleus:schema-create
 
-Performance tests can be launched using the following command (a Grizzly server will be automatically launched with some test data)
+Integration tests can be launched using the following command. An embedded Grizzly HTTP server will be launched to perform real calls
+to the REST API and to the MySQL database.
 
       mvn verify -Pintegration-tests
 
+Performance tests can be launched using the following command. In this example, these tests are the same integration tests but executed
+multiple times to calculate some statistics
+
+      mvn verify -Pperformance-tests
+
 To launch the server run the command
 
-    mvn jetty:run
+      mvn jetty:run
 
 Now, the client sample code can be executed in a new command window with
-
-    mvn exec:java -Pclient
+      
+      mvn exec:java -Pclient
