@@ -216,8 +216,6 @@
         		<artifactId>maven-surefire-plugin</artifactId>
         		<version>3.0.0</version>
         		<configuration>
-          			<!-- Allow JUnitPerf to access the test classes in JDK 17 -->
-          			<argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
 					<excludedGroups>categories.IntegrationTest, categories.PerformanceTest</excludedGroups>
         		</configuration>
       		</plugin>
