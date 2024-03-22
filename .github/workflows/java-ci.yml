@@ -13,8 +13,10 @@ jobs:
       - id: set-matrix
         run: |
           output="::set-output name=matrix::{\"include\":["
-          for dir in $(ls -d */*); do
-            output+="{\"dir\":\"$dir\"},"
+          for dir in maven-examples testing-examples; do
+            for subdir in $(ls -d $dir/*); do
+              output+="{\"dir\":\"$subdir\"},"
+            done
           done
           output+="]}"
           echo $output
