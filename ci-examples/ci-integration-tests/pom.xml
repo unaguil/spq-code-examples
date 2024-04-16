@@ -17,6 +17,8 @@
 		<jersey.version>2.35</jersey.version>
 		<server.hostname>127.0.0.1</server.hostname>
 		<server.port>8080</server.port>
+		<sonar.organization>unaguil</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencyManagement>
@@ -94,14 +96,14 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<!-- enables mock of static methods -->
-			<artifactId>mockito-inline</artifactId>
-			<version>4.6.0</version>
+			<artifactId>mockito-core</artifactId>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
       		<groupId>com.github.noconnor</groupId>
       		<artifactId>junitperf</artifactId>
-      		<version>1.22.1</version>
+      		<version>1.35.0</version>
     	</dependency>
 	</dependencies>
 
@@ -194,7 +196,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.8</version>
+				<version>0.8.12</version>
 				<executions>
 					<execution>
 						<goals>
