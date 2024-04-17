@@ -1,7 +1,8 @@
-JUnitPerf + Mockito + Jersey + DataNucleus + MySQL
-==================================================
+Continuous Integration - (JUnitPerf + Mockito + Jersey + DataNucleus + MySQL)
+=============================================================================
 
-This example shows how to use JUnitPerf to test the performance of the REST API.
+This example shows howto configure CI using GitHub Actions performing unit testing, integration testing and performance tests.
+See `.github/workflows/java-ci.yml` file for the CI configuration.
 
 Run the following command to compile all classes and launch the unit tests:
 
