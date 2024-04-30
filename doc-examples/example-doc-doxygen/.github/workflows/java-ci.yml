@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21
@@ -19,8 +22,12 @@ jobs:
       run: mvn -B test
 
     - name: Install doxygen dependencies
-      run: apt-get install -y doxygen
+      run: sudo apt-get install -y doxygen
     - name: Generate documentation with Doxygen
       run: |
-        cd /src/main/resources
+        cd src/main/resources
         doxygen Doxyfile
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: target/doxygen/html
