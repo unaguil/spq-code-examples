@@ -1,0 +1,5 @@
+DROP SCHEMA IF EXISTS messages;
+DROP USER IF EXISTS 'spq'@'%';
+CREATE SCHEMA messages;
+CREATE USER IF NOT EXISTS 'spq'@'%' IDENTIFIED BY 'spq';
+GRANT ALL ON messages.* TO 'spq'@'%';
