@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - id: set-matrix
         run: |
-          dirs=$(ls -d maven-examples/*/ testing-examples/*/ | sed 's|/$||' | jq -R . | jq -sc 'map({dir: .})')
+          dirs=$(ls -d maven-examples/basic-maven-examples/*/ maven-examples/maven-testing-examples/*/ | sed 's|/$||' | jq -R . | jq -sc 'map({dir: .})')
           echo "matrix={\"include\":$dirs}" >> $GITHUB_OUTPUT
 
   build:
