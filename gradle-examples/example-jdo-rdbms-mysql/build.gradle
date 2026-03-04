@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.datanucleus'
+version = '3.0'
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+repositories { mavenCentral() }
+
+dependencies {
+    implementation 'org.datanucleus:javax.jdo:3.2.1'
+    implementation 'org.datanucleus:datanucleus-core:6.0.11'
+    implementation 'org.datanucleus:datanucleus-api-jdo:6.0.5'
+    implementation 'org.datanucleus:datanucleus-rdbms:6.0.10'
+    implementation 'com.mysql:mysql-connector-j:9.1.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.24.3'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+}
+
+// DataNucleus enhancement - runs automatically after compileJava
+tasks.register('enhance', JavaExec) {
+    dependsOn compileJava
+    mainClass = 'org.datanucleus.enhancer.DataNucleusEnhancer'
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.main.output.classesDirs
+    args = ['-api', 'JDO', '-v']
+    doFirst {
+        sourceSets.main.output.classesDirs.each { dir ->
+            fileTree(dir).include('**/*.class').each { f ->
+                args << f.absolutePath
+            }
+        }
+    }
+}
+compileJava.finalizedBy enhance
+
+// Clean up .log and .ods files (mirrors maven-clean-plugin config)
+clean.doFirst {
+    delete fileTree(projectDir) { include '*.log', '*.ods' }
+}
+
+tasks.register('run', JavaExec) {
+    dependsOn classes
+    mainClass = 'org.datanucleus.samples.jdo.tutorial.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('dnSchemaCreate', JavaExec) {
+    dependsOn classes
+    mainClass = 'org.datanucleus.store.rdbms.SchemaTool'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-create', '-props', 'src/main/resources/datanucleus.properties']
+}
+
+tasks.register('dnSchemaDelete', JavaExec) {
+    dependsOn classes
+    mainClass = 'org.datanucleus.store.rdbms.SchemaTool'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-delete', '-props', 'src/main/resources/datanucleus.properties']
+}

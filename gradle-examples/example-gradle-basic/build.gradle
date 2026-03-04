@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.mycompany.app'
+version = '1.0-SNAPSHOT'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+repositories { mavenCentral() }
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+// Resource filtering: replaces Maven-style ${pom.*} and other placeholders
+processResources {
+    filesMatching('**/*.properties') {
+        filter { line ->
+            line
+                .replace('${pom.name}', project.name)
+                .replace('${pom.version}', project.version.toString())
+                .replace('${command.line.prop}', project.findProperty('command.line.prop')?.toString() ?: '')
+        }
+    }
+}
+
+// Run the main class
+tasks.register('run', JavaExec) {
+    dependsOn classes
+    mainClass = 'com.mycompany.app.App'
+    classpath = sourceSets.main.runtimeClasspath
+}
