@@ -15,12 +15,16 @@ dependencies {
 
 // Resource filtering: replaces Maven-style ${pom.*} and other placeholders
 processResources {
+    // Capture values at configuration time to avoid Task.project access at execution time
+    def projectName = project.name
+    def projectVersion = project.version.toString()
+    def commandLineProp = project.findProperty('command.line.prop')?.toString() ?: ''
     filesMatching('**/*.properties') {
         filter { line ->
             line
-                .replace('${pom.name}', project.name)
-                .replace('${pom.version}', project.version.toString())
-                .replace('${command.line.prop}', project.findProperty('command.line.prop')?.toString() ?: '')
+                .replace('${pom.name}', projectName)
+                .replace('${pom.version}', projectVersion)
+                .replace('${command.line.prop}', commandLineProp)
         }
     }
 }
