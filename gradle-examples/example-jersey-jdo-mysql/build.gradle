@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.gretty' version '4.1.5'
+}
+
+group = 'org.datanucleus'
+version = '1.0-SNAPSHOT'
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+repositories { mavenCentral() }
+
+ext {
+    jerseyVersion = '2.41'
+    serverHostname = project.findProperty('server.hostname') ?: '127.0.0.1'
+    serverPort = project.findProperty('server.port') ?: '8080'
+}
+
+dependencies {
+    // DataNucleus
+    implementation 'org.datanucleus:javax.jdo:3.2.1'
+    implementation 'org.datanucleus:datanucleus-core:6.0.11'
+    implementation 'org.datanucleus:datanucleus-api-jdo:6.0.5'
+    implementation 'org.datanucleus:datanucleus-rdbms:6.0.10'
+    implementation 'com.mysql:mysql-connector-j:9.1.0'
+    // Jersey
+    implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:${jerseyVersion}"
+    implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
+    implementation "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}"
+    implementation 'javax.activation:activation:1.1.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.9'
+    // Logging
+    implementation 'org.apache.logging.log4j:log4j-api:2.24.3'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+}
+
+// DataNucleus enhancement - runs automatically after compileJava
+tasks.register('enhance', JavaExec) {
+    dependsOn compileJava
+    mainClass = 'org.datanucleus.enhancer.DataNucleusEnhancer'
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.main.output.classesDirs
+    args = ['-api', 'JDO', '-v']
+    doFirst {
+        sourceSets.main.output.classesDirs.each { dir ->
+            fileTree(dir).include('**/*.class').each { f ->
+                args << f.absolutePath
+            }
+        }
+    }
+}
+compileJava.finalizedBy enhance
+
+gretty {
+    httpPort = 8080
+    contextPath = '/'
+}
+
+// Clean up .log and .ods files
+clean.doFirst {
+    delete fileTree(projectDir) { include '*.log', '*.ods' }
+}
+
+tasks.register('runClient', JavaExec) {
+    dependsOn classes
+    mainClass = 'es.deusto.spq.client.ExampleClient'
+    classpath = sourceSets.main.runtimeClasspath
+    args = [serverHostname, serverPort]
+}
+
+tasks.register('dnSchemaCreate', JavaExec) {
+    dependsOn classes
+    mainClass = 'org.datanucleus.store.rdbms.SchemaTool'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-create', '-props', 'src/main/resources/datanucleus.properties']
+}
+
+tasks.register('dnSchemaDelete', JavaExec) {
+    dependsOn classes
+    mainClass = 'org.datanucleus.store.rdbms.SchemaTool'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-delete', '-props', 'src/main/resources/datanucleus.properties']
+}

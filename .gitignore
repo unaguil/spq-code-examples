@@ -17,5 +17,13 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
-#Visual Studio Code files
+# Visual Studio Code files
 .vscode
+
+# VS Code Dev container
+.devcontainer
+
+# Gradle files
+**/.gradle
+**/bin
+**/build
