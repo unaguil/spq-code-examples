@@ -11,14 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import donations.util.WindowManager;
 import donations.util.DonationException;
@@ -42,7 +42,7 @@ public class Donor implements ActionListener, Runnable {
 	public Donor(String hostname, String port) {
 		client = ClientBuilder.newClient();
 		webTarget = client.target(String.format("http://%s:%s/rest", hostname, port));
-		
+
 		this.buttonDonate = new JButton("Donate");
 		this.buttonDonate.addActionListener(this);
 		this.buttonEnd = new JButton("End Process");
@@ -67,7 +67,7 @@ public class Donor implements ActionListener, Runnable {
 
 		this.frame = new JFrame("Donor: REST Client");
 		this.frame.setSize(400, 125);
-		this.frame.setResizable(false);		
+		this.frame.setResizable(false);
 		this.frame.getContentPane().add(panelDonativos, "North");
 		this.frame.getContentPane().add(panelBotones);
 		this.frame.getContentPane().add(this.messageLabel, "South");
@@ -99,11 +99,11 @@ public class Donor implements ActionListener, Runnable {
 			}
 		}
 	}
-	
+
 	public void sendDonation(int quantity) throws DonationException {
 		WebTarget donationsWebTarget = webTarget.path("collector/donations");
 		Invocation.Builder invocationBuilder = donationsWebTarget.request(MediaType.APPLICATION_JSON);
-		
+
 		Donation donation = new Donation(quantity);
 		Response response = invocationBuilder.post(Entity.entity(donation, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
@@ -124,18 +124,18 @@ public class Donor implements ActionListener, Runnable {
 
 	public void run() {
 		running.set(true);
-		while(running.get()) {
-			try { 
+		while (running.get()) {
+			try {
 				Thread.sleep(2000);
 				System.out.println("Obtaining data from server...");
 				DonationInfo donationInfo = getDonationInfo();
 				this.totalField.setText(Integer.toString(donationInfo.getTotal()));
 			} catch (DonationException e) {
 				System.out.println(e.getMessage());
-			} catch (InterruptedException e){ 
-                Thread.currentThread().interrupt();
-                System.out.println("Thread was interrupted, Failed to complete operation");
-            }
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				System.out.println("Thread was interrupted, Failed to complete operation");
+			}
 		}
 	}
 

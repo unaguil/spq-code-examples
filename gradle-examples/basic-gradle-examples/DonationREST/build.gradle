@@ -11,7 +11,7 @@ java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 repositories { mavenCentral() }
 
 ext {
-    jerseyVersion = '2.41'
+    jerseyVersion = '3.1.10'
     serverHostname = project.findProperty('server.hostname') ?: '127.0.0.1'
     serverPort = project.findProperty('server.port') ?: '8080'
 }
@@ -23,7 +23,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-gretty { httpPort = 8080 }
+gretty {
+    httpPort = 8080
+    contextPath = '/'
+}
 
 tasks.register('runManager', JavaExec) {
     dependsOn classes

@@ -12,13 +12,13 @@ import es.deusto.spq.pojo.DirectMessage;
 import es.deusto.spq.pojo.MessageData;
 import es.deusto.spq.pojo.UserData;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +30,8 @@ public class Resource {
 	protected static final Logger logger = LogManager.getLogger();
 
 	private int cont = 0;
-	private PersistenceManager pm=null;
-	private Transaction tx=null;
+	private PersistenceManager pm = null;
+	private Transaction tx = null;
 
 	public Resource() {
 		PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
@@ -43,19 +43,21 @@ public class Resource {
 	@Path("/sayMessage")
 	public Response sayMessage(DirectMessage directMessage) {
 		User user = null;
-		try{
+		try {
 			tx.begin();
 			logger.info("Creating query ...");
-			
-			try (Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login == \"" + directMessage.getUserData().getLogin() + "\" &&  password == \"" + directMessage.getUserData().getPassword() + "\"")) {
+
+			try (Query<?> q = pm.newQuery("SELECT FROM " + User.class.getName() + " WHERE login == \""
+					+ directMessage.getUserData().getLogin() + "\" &&  password == \""
+					+ directMessage.getUserData().getPassword() + "\"")) {
 				q.setUnique(true);
-				user = (User)q.execute();
-				
+				user = (User) q.execute();
+
 				logger.info("User retrieved: {}", user);
-				if (user != null)  {
+				if (user != null) {
 					Message message = new Message(directMessage.getMessageData().getMessage());
 					user.getMessages().add(message);
-					pm.makePersistent(user);					 
+					pm.makePersistent(user);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -66,7 +68,7 @@ public class Resource {
 				tx.rollback();
 			}
 		}
-		
+
 		if (user != null) {
 			cont++;
 			logger.info(" * Client number: {}", cont);
@@ -74,17 +76,17 @@ public class Resource {
 			messageData.setMessage(directMessage.getMessageData().getMessage());
 			return Response.ok(messageData).build();
 		} else {
-			return Response.status(Status.BAD_REQUEST).entity("Login details supplied for message delivery are not correct").build();
+			return Response.status(Status.BAD_REQUEST)
+					.entity("Login details supplied for message delivery are not correct").build();
 		}
 	}
-	
+
 	@POST
 	@Path("/register")
 	public Response registerUser(UserData userData) {
-		try
-        {	
-            tx.begin();
-            logger.info("Checking whether the user already exits or not: '{}'", userData.getLogin());
+		try {
+			tx.begin();
+			logger.info("Checking whether the user already exits or not: '{}'", userData.getLogin());
 			User user = null;
 			try {
 				user = pm.getObjectById(User.class, userData.getLogin());
@@ -99,19 +101,16 @@ public class Resource {
 			} else {
 				logger.info("Creating user: {}", user);
 				user = new User(userData.getLogin(), userData.getPassword());
-				pm.makePersistent(user);					 
+				pm.makePersistent(user);
 				logger.info("User created: {}", user);
 			}
 			tx.commit();
 			return Response.ok().build();
-        }
-        finally
-        {
-            if (tx.isActive())
-            {
-                tx.rollback();
-            }
-      
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+
 		}
 	}
 

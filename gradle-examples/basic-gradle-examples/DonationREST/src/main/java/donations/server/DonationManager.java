@@ -10,13 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import donations.serialization.DonationInfo;
 import donations.util.DonationException;
@@ -60,7 +60,7 @@ public class DonationManager implements ActionListener, Runnable {
 
 		this.frame = new JFrame("Donation Collector: RMI Manager");
 		this.frame.setSize(475, 140);
-		this.frame.setResizable(false);		
+		this.frame.setResizable(false);
 		this.frame.getContentPane().add(panelSuperior, "North");
 		this.frame.getContentPane().add(panelBoton);
 		this.frame.getContentPane().add(this.message, "South");
@@ -73,7 +73,7 @@ public class DonationManager implements ActionListener, Runnable {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		JButton target = (JButton)e.getSource();
+		JButton target = (JButton) e.getSource();
 		if (target == this.buttonEnd) {
 			this.stop();
 			System.exit(0);
@@ -93,19 +93,19 @@ public class DonationManager implements ActionListener, Runnable {
 
 	public void run() {
 		running.set(true);
-		while(running.get()) {
-			try { 
+		while (running.get()) {
+			try {
 				Thread.sleep(2000);
 				System.out.println("Obtaining data from server...");
 				DonationInfo donationInfo = getDonationInfo();
 				this.donation.setText(Integer.toString(donationInfo.getLast()));
 				this.total.setText(Integer.toString(donationInfo.getTotal()));
-            } catch (DonationException e) {
+			} catch (DonationException e) {
 				System.out.println(e.getMessage());
-			} catch (InterruptedException e){ 
-                Thread.currentThread().interrupt();
-                System.out.println("Thread was interrupted, Failed to complete operation");
-            }
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				System.out.println("Thread was interrupted, Failed to complete operation");
+			}
 		}
 	}
 

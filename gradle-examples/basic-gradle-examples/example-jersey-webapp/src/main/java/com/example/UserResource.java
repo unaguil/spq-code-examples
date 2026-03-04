@@ -1,16 +1,16 @@
 package com.example;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +30,7 @@ public class UserResource {
 
     public enum Order {
         ASC,
-        DESC;        
+        DESC;
 
         // case insensitive values for order parameter
         public static Order fromString(String value) {
@@ -41,9 +41,9 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getUsers(@QueryParam("filter") String str,
-        @QueryParam("order") @DefaultValue("ASC") Order order) {
-        
-            // This data could be retrieved from a database
+            @QueryParam("order") @DefaultValue("ASC") Order order) {
+
+        // This data could be retrieved from a database
         List<User> users = new ArrayList<>();
         users.add(new User(0, "John", "Smith"));
         users.add(new User(1, "Isaac", "Newton"));

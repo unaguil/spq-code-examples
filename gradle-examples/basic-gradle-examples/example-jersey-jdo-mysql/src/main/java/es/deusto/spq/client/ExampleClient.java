@@ -1,13 +1,13 @@
 package es.deusto.spq.client;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import es.deusto.spq.pojo.DirectMessage;
 import es.deusto.spq.pojo.MessageData;
@@ -23,7 +23,6 @@ public class ExampleClient {
 	private static final String USER = "dipina";
 	private static final String PASSWORD = "dipina";
 
-
 	private Client client;
 	private WebTarget webTarget;
 
@@ -35,7 +34,7 @@ public class ExampleClient {
 	public void registerUser(String login, String password) {
 		WebTarget registerUserWebTarget = webTarget.path("register");
 		Invocation.Builder invocationBuilder = registerUserWebTarget.request(MediaType.APPLICATION_JSON);
-		
+
 		UserData userData = new UserData();
 		userData.setLogin(login);
 		userData.setPassword(password);
@@ -64,7 +63,7 @@ public class ExampleClient {
 
 		Response response = invocationBuilder.post(Entity.entity(directMessage, MediaType.APPLICATION_JSON));
 		if (response.getStatus() != Status.OK.getStatusCode()) {
-			logger.error("Error connecting with the server. Code: {}",response.getStatus());
+			logger.error("Error connecting with the server. Code: {}", response.getStatus());
 		} else {
 			String responseMessage = response.readEntity(String.class);
 			logger.info("* Message coming from the server: '{}'", responseMessage);
