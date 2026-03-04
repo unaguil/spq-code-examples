@@ -16,7 +16,6 @@ Make sure that the database was correctly configured. Use the contents of the fi
 Run the following command to create database schema for this sample.
 
       mvn datanucleus:schema-create
-
 Run the following command to launche the main example class 
 
       mvn exec:java

@@ -17,7 +17,7 @@
     <!-- <maven.compiler.target>1.8</maven.compiler.target> -->
     <!-- starting from JDK 9 is better to use the release property as it checks
       if we are using API libraries that are no available in the specified version -->
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
   </properties>
 
   <dependencies>
@@ -36,7 +36,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.13.0</version>
       </plugin>
     </plugins>
     <!-- added to configure maven to filter the properties included in the resource directory and

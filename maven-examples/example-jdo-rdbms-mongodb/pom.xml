@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>org.datanucleus</groupId>
 	<artifactId>datanucleus-jdo-mongodb</artifactId>
 	<packaging>jar</packaging>
@@ -12,7 +12,7 @@
 	<url>http://www.datanucleus.org</url>
 
 	<properties>
-		<maven.compiler.release>8</maven.compiler.release>
+		<maven.compiler.release>21</maven.compiler.release>
 		<config.files.dir>${basedir}/src/main/resources</config.files.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -26,37 +26,37 @@
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-core</artifactId>
-			<version>[6.0.0-m1, 6.9)</version>
+			<version>[6.0.0-release, 6.9)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-api-jdo</artifactId>
-			<version>[6.0.0-m1, 6.9)</version>
+			<version>[6.0.0-release, 6.9)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-mongodb</artifactId>
-			<version>[6.0.0-m1, 6.9)</version>
+			<version>[6.0.0-release, 6.9)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.12.11</version>
+			<artifactId>mongodb-driver-sync</artifactId>
+			<version>5.2.0</version>
 		</dependency>
 		<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>[2.17.1, 2.39.1]</version>
-        </dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.24.3</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>[2.17.1, 2.39.1]</version>
+			<version>2.24.3</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.apache.logging.log4j</groupId>
-    		<artifactId>log4j-slf4j-impl</artifactId>
-    		<version>2.19.0</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.24.3</version>
 		</dependency>
 	</dependencies>
 
@@ -91,7 +91,7 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.13.0</version>
 			</plugin>
 
 			<plugin>
@@ -117,17 +117,16 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-
+				<version>3.5.0</version>
 				<configuration>
 					<mainClass>org.datanucleus.samples.jdo.tutorial.Main</mainClass>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.11.2</version>
 				<configuration>
 					<show>private</show>
 					<nohelp>true</nohelp>
