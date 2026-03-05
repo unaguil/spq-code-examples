@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import junit.framework.JUnit4TestAdapter;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Rule;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
