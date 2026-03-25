@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.mycompany.app'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.6.0'
+}
+
+test {
+    useJUnit()
+}

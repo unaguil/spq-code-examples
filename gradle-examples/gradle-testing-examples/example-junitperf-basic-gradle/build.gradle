@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.mycompany.app'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.github.noconnor:junitperf:1.22.1'
+}
+
+test {
+    useJUnit()
+    // mimic surefire argLine used in the Maven example
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
+}
+
+// Performance test task: runs tests matching *PerfTest and always executes
+task perfTest(type: Test) {
+    description = 'Run performance tests (JUnitPerf)'
+    group = 'verification'
+
+    filter {
+        includeTestsMatching '*PerfTest'
+    }
+
+    useJUnit()
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    // Always run performance tests regardless of up-to-date checks
+    outputs.upToDateWhen { false }
+
+    reports {
+        junitXml.required.set(false)
+        html.required.set(true)
+        html.outputLocation.set(file("${buildDir}/reports/junitperf"))
+    }
+}
+
+// Run perfTest as part of the verification lifecycle
+check.dependsOn perfTest

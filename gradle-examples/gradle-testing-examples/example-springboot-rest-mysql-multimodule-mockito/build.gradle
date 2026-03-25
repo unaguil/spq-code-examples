@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.1.0' apply false
+    id 'org.springframework.boot' version '3.4.4' apply false
+}
+
+allprojects {
+    group = 'es.deusto.spq'
+    version = '0.0.1-SNAPSHOT'
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+    tasks.withType(Test) {
+        useJUnitPlatform()
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+
+    jacoco {
+        toolVersion = '0.8.10'
+    }
+
+    if (tasks.findByName('jacocoTestReport') == null) {
+        tasks.register('jacocoTestReport', JacocoReport) {
+            dependsOn(tasks.named('test'))
+
+            reports {
+                xml.required = true
+                csv.required = false
+                html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
+            }
+
+            classDirectories.setFrom(fileTree("${buildDir}/classes/java/main") {
+                exclude '**/generated/**'
+            })
+
+            sourceDirectories.setFrom(files('src/main/java'))
+            executionData.setFrom(fileTree(buildDir).include('**/jacoco/*.exec', '**/jacoco.exec'))
+        }
+    } else {
+        tasks.named('jacocoTestReport', JacocoReport).configure {
+            dependsOn(tasks.named('test'))
+            reports {
+                xml.required = true
+                csv.required = false
+                html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
+            }
+            classDirectories.setFrom(fileTree("${buildDir}/classes/java/main") {
+                exclude '**/generated/**'
+            })
+            sourceDirectories.setFrom(files('src/main/java'))
+            executionData.setFrom(fileTree(buildDir).include('**/jacoco/*.exec', '**/jacoco.exec'))
+        }
+    }
+}

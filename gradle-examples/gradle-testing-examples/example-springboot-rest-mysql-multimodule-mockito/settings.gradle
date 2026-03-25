@@ -1,0 +1,2 @@
+rootProject.name = 'example-springboot-rest-mysql-multimodule'
+include 'commons', 'server', 'client'
