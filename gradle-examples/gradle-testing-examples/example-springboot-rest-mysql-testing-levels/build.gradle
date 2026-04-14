@@ -26,6 +26,13 @@ subprojects {
         finalizedBy tasks.named('jacocoTestReport')
     }
 
+    // Default 'test' task runs only unit tests (no integration or performance tags)
+    tasks.named('test', Test) {
+        useJUnitPlatform {
+            excludeTags 'integration', 'performance'
+        }
+    }
+
     jacoco {
         toolVersion = '0.8.10'
     }
@@ -40,12 +47,14 @@ subprojects {
                 html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
             }
 
-            classDirectories.setFrom(fileTree("${buildDir}/classes/java/main") {
-                exclude '**/generated/**'
+            classDirectories.setFrom(layout.buildDirectory.dir('classes/java/main').map { d ->
+                fileTree(d) { exclude '**/generated/**' }
             })
 
             sourceDirectories.setFrom(files('src/main/java'))
-            executionData.setFrom(fileTree(buildDir).include('**/jacoco/*.exec', '**/jacoco.exec'))
+            executionData.setFrom(layout.buildDirectory.dir('jacoco').map { d ->
+                fileTree(d) { include '*.exec' }
+            })
         }
     } else {
         tasks.named('jacocoTestReport', JacocoReport).configure {
@@ -55,11 +64,13 @@ subprojects {
                 csv.required = false
                 html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
             }
-            classDirectories.setFrom(fileTree("${buildDir}/classes/java/main") {
-                exclude '**/generated/**'
+            classDirectories.setFrom(layout.buildDirectory.dir('classes/java/main').map { d ->
+                fileTree(d) { exclude '**/generated/**' }
             })
             sourceDirectories.setFrom(files('src/main/java'))
-            executionData.setFrom(fileTree(buildDir).include('**/jacoco/*.exec', '**/jacoco.exec'))
+            executionData.setFrom(layout.buildDirectory.dir('jacoco').map { d ->
+                fileTree(d) { include '*.exec' }
+            })
         }
     }
 }
