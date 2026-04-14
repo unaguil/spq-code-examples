@@ -57,13 +57,14 @@ Notes
 Testing
 -------
 
-The project provides three isolated test lanes, equivalent to the Maven Surefire/Failsafe profile separation in the Jersey baseline:
+The project provides four isolated test lanes:
 
 | Lane | Command | What runs | Tooling |
 |------|---------|-----------|---------|
 | Unit | `./gradlew test` | Mocked controller tests, entity/DTO tests, client tests | JUnit 5 + Mockito + MockMvc |
 | Integration | `./gradlew :server:integrationTest` | Full API ↔ external MySQL | JUnit 5 + Spring Boot Test |
 | Performance | `./gradlew :server:performanceTest` | Multi-threaded load against external MySQL | JUnit 5 + JUnitPerf |
+| E2E | `./gradlew :web-client:e2eTest` | Browser-driven full-stack journey | JUnit 5 + Playwright |
 
 ### Unit tests only (fast, no DB required)
 
@@ -140,9 +141,33 @@ Runs `ServerPerformanceTest` against the same external MySQL connection. Each te
 
 Source: `server/src/test/java/` (tagged `@Tag("performance")`)
 
+### E2E tests (Playwright + full stack)
+
+```
+./gradlew :web-client:e2eTest
+```
+
+Runs `WebClientE2ETest` using a headless Chromium browser against the live web-client at `http://localhost:8081`. Requires the full stack to be running beforehand:
+
+```bash
+./gradlew :server:bootRun &
+./gradlew :web-client:bootRun &
+./gradlew :web-client:e2eTest
+```
+
+Covers the complete user journey through the browser UI:
+- Home page navigation links
+- User registration → "Saved" confirmation
+- List all users
+- Post a message → echoed response
+- View messages by user
+
+Playwright downloads Chromium automatically on first run (`~/.cache/ms-playwright`).
+
+
 ### Run all lanes sequentially
 
 ```
-./gradlew test :server:integrationTest :server:performanceTest
+./gradlew test :server:integrationTest :server:performanceTest :web-client:e2eTest
 ```
 
