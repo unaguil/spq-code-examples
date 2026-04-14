@@ -2,11 +2,12 @@ SpringBoot + REST + MySQL (Multimodule)
 =====================================
 
 This multimodule example uses Spring Boot to provide a REST API backed by MySQL.
-The project is organized into three submodules:
+The project is organized into four submodules:
 
-- `client` — sample client code and launch scripts
+- `client` — sample Java command-line client using RestTemplate
 - `commons` — shared domain/model code used by other modules
 - `server` — Spring Boot REST service
+- `web-client` — browser-based Thymeleaf UI that exercises all server endpoints
 
 Database
 --------
@@ -34,6 +35,17 @@ Run the client sample (if a `run` task is configured) with:
     ./gradlew :client:run
 
 Alternatively, the `client` module contains generated scripts in `client/build/scripts/` that can be used to run the sample client.
+
+Run the web client on port 8081 (server must already be running) with:
+
+    ./gradlew :web-client:bootRun
+
+Then open `http://localhost:8081` in a browser. The home page links to all four features:
+register a user, view all users, post a message, and view messages by user.
+
+The server URL used by the web client can be overridden at runtime:
+
+    ./gradlew :web-client:bootRun --args='--server.api.base-url=http://other-host:8080'
 
 Notes
 -----

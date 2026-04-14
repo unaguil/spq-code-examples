@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Users</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5" style="max-width: 500px;">
+  <h2>Registered Users</h2>
+  <p class="text-muted">Calls <code>GET /users/all</code> on the server.</p>
+  <a th:href="@{/}" class="btn btn-secondary mb-3">Back</a>
+  <table class="table table-bordered">
+    <thead><tr><th>Login</th></tr></thead>
+    <tbody>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.login}"></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(users)}">
+        <td class="text-muted">No users found.</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
