@@ -76,6 +76,9 @@ Runs all tests **without** the `integration` or `performance` JUnit 5 tags. Cove
 - `MessageControllerTest` — GET /messages/all (MockMvc + MockitoBean)
 - `UserTest`, `MessageTest`, `UserDataTest` — entity/DTO invariants (commons module)
 - `ExampleClientTest` — HTTP client behaviour (client module)
+- `UserWebControllerTest` — GET/POST /users/register, GET /users/list (`@WebMvcTest` + `@MockitoBean ServerApiService`)
+- `MessageWebControllerTest` — GET/POST /messages/post, GET/POST /messages/list (`@WebMvcTest` + `@MockitoBean ServerApiService`)
+- `ServerApiServiceTest` — all four RestTemplate call patterns (plain Mockito, no Spring context)
 
 Code coverage (Jacoco)
 ----------------------
@@ -94,6 +97,7 @@ Per-module reports:
 ./gradlew :commons:jacocoTestReport
 ./gradlew :client:jacocoTestReport
 ./gradlew :server:jacocoTestReport
+./gradlew :web-client:jacocoTestReport
 ```
 
 ### Integration tests (external MySQL)
