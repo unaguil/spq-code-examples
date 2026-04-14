@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.1.0' apply false
+    id 'org.springframework.boot' version '3.4.4' apply false
+}
+
+allprojects {
+    group = 'es.deusto.spq'
+    version = '0.0.1-SNAPSHOT'
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+    tasks.withType(Test) {
+        useJUnitPlatform()
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+
+    // Default 'test' task runs only unit tests (no integration or performance tags)
+    tasks.named('test', Test) {
+        useJUnitPlatform {
+            excludeTags 'integration', 'performance'
+        }
+    }
+
+    jacoco {
+        toolVersion = '0.8.10'
+    }
+
+    if (tasks.findByName('jacocoTestReport') == null) {
+        tasks.register('jacocoTestReport', JacocoReport) {
+            dependsOn(tasks.named('test'))
+
+            reports {
+                xml.required = true
+                csv.required = false
+                html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
+            }
+
+            classDirectories.setFrom(layout.buildDirectory.dir('classes/java/main').map { d ->
+                fileTree(d) { exclude '**/generated/**' }
+            })
+
+            sourceDirectories.setFrom(files('src/main/java'))
+            executionData.setFrom(layout.buildDirectory.dir('jacoco').map { d ->
+                fileTree(d) { include '*.exec' }
+            })
+        }
+    } else {
+        tasks.named('jacocoTestReport', JacocoReport).configure {
+            dependsOn(tasks.named('test'))
+            reports {
+                xml.required = true
+                csv.required = false
+                html.outputLocation = layout.buildDirectory.dir('reports/jacoco')
+            }
+            classDirectories.setFrom(layout.buildDirectory.dir('classes/java/main').map { d ->
+                fileTree(d) { exclude '**/generated/**' }
+            })
+            sourceDirectories.setFrom(files('src/main/java'))
+            executionData.setFrom(layout.buildDirectory.dir('jacoco').map { d ->
+                fileTree(d) { include '*.exec' }
+            })
+        }
+    }
+}
