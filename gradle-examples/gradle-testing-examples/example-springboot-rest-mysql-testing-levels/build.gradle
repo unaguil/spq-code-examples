@@ -1,7 +1,39 @@
 plugins {
     id 'java'
+    id 'com.github.spotbugs' version '6.5.1' apply false
     id 'io.spring.dependency-management' version '1.1.0' apply false
+    id 'name.remal.sonarlint' version '7.0.1' apply false
     id 'org.springframework.boot' version '3.4.4' apply false
+}
+
+def mainQualityTasks = ['checkstyleMain', 'pmdMain', 'spotbugsMain', 'sonarlintMain']
+def testQualityTasks = ['checkstyleTest', 'pmdTest', 'spotbugsTest', 'sonarlintTest']
+def allQualityTasks = (mainQualityTasks + testQualityTasks).toSet()
+
+def matchingQualityTasks = { taskNames ->
+    subprojects.collect { subproject ->
+        subproject.tasks.matching { task ->
+            taskNames.any { taskName -> task.name.equalsIgnoreCase(taskName) }
+        }
+    }
+}
+
+tasks.register('qualityMain') {
+    group = 'verification'
+    description = 'Runs local static analysis for production source sets in all modules.'
+    dependsOn matchingQualityTasks(mainQualityTasks)
+}
+
+tasks.register('qualityTest') {
+    group = 'verification'
+    description = 'Runs local static analysis for test source sets in all modules.'
+    dependsOn matchingQualityTasks(testQualityTasks)
+}
+
+tasks.register('qualityCheck') {
+    group = 'verification'
+    description = 'Runs all local static analysis tasks across all modules.'
+    dependsOn tasks.named('qualityMain'), tasks.named('qualityTest')
 }
 
 allprojects {
@@ -14,7 +46,11 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
+    apply plugin: 'name.remal.sonarlint'
+    apply plugin: 'pmd'
+    apply plugin: 'com.github.spotbugs'
 
     java {
         toolchain {
@@ -36,6 +72,100 @@ subprojects {
     jacoco {
         toolVersion = '0.8.10'
     }
+
+    checkstyle {
+        toolVersion = '10.21.4'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        maxWarnings = 0
+        ignoreFailures = false
+        showViolations = true
+    }
+
+    tasks.withType(Checkstyle).configureEach {
+        reports {
+            xml.required = true
+            html.required = true
+        }
+    }
+
+    pmd {
+        consoleOutput = true
+        incrementalAnalysis = true
+        ruleSets = []
+        ruleSetFiles = files(rootProject.file('config/pmd/ruleset.xml'))
+    }
+
+    tasks.withType(Pmd).configureEach {
+        reports {
+            xml.required = true
+            html.required = true
+        }
+    }
+
+    spotbugs {
+        effort = com.github.spotbugs.snom.Effort.valueOf('DEFAULT')
+        reportLevel = com.github.spotbugs.snom.Confidence.valueOf('DEFAULT')
+        ignoreFailures = false
+        showProgress = true
+    }
+
+    tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+        reports {
+            html.required = true
+            xml.required = true
+        }
+    }
+
+    sonarLint {
+        languages {
+            include('java', 'xml')
+        }
+        logging {
+            withDescription = false
+        }
+    }
+
+    tasks.named('check').configure {
+        setDependsOn(
+            dependsOn
+                - tasks.withType(Checkstyle)
+                - tasks.withType(Pmd)
+                - tasks.withType(com.github.spotbugs.snom.SpotBugsTask)
+                - tasks.matching { task -> task.name.toLowerCase().startsWith('sonarlint') }
+        )
+    }
+
+    def explicitlyRequestedTasks = providers.provider {
+        gradle.startParameter.taskNames.collect { taskName ->
+            def normalized = taskName.tokenize(':').last()
+            normalized ?: taskName
+        }.toSet()
+    }
+
+    def shouldRunQualityTask = { Task task ->
+        def requestedTasks = explicitlyRequestedTasks.get()
+        requestedTasks.contains(task.name) ||
+            requestedTasks.any { requested ->
+                ['qualityMain', 'qualityTest', 'qualityCheck'].contains(requested)
+            }
+    }
+
+    tasks.withType(Checkstyle).configureEach {
+        onlyIf { shouldRunQualityTask(it) }
+    }
+
+    tasks.withType(Pmd).configureEach {
+        onlyIf { shouldRunQualityTask(it) }
+    }
+
+    tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+        onlyIf { shouldRunQualityTask(it) }
+    }
+
+    tasks.matching { task -> allQualityTasks.contains(task.name) && task.name.toLowerCase().startsWith('sonarlint') }
+        .configureEach {
+            onlyIf { shouldRunQualityTask(it) }
+        }
 
     if (tasks.findByName('jacocoTestReport') == null) {
         tasks.register('jacocoTestReport', JacocoReport) {

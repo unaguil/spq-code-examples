@@ -171,3 +171,39 @@ Playwright downloads Chromium automatically on first run (`~/.cache/ms-playwrigh
 ./gradlew test :server:integrationTest :server:performanceTest :web-client:e2eTest
 ```
 
+Quality analysis
+----------------
+
+Main aggregate entry points:
+
+```bash
+./gradlew qualityMain
+./gradlew qualityTest
+./gradlew qualityCheck
+```
+
+Included tools:
+
+- `Checkstyle` for basic style and import issues
+- `PMD` for design and error-prone code patterns
+- `SpotBugs` for bytecode-level bug detection
+- `SonarLint` for local Sonar-style inspections without a server
+
+Per-module examples:
+
+```bash
+./gradlew :server:checkstyleMain
+./gradlew :server:pmdMain
+./gradlew :server:spotbugsMain
+./gradlew :server:sonarlintMain
+```
+
+Helpful discovery tasks:
+
+```bash
+./gradlew sonarLintRules
+./gradlew sonarLintProperties
+```
+
+Reports are generated under each module's `build/reports/` directory.
+
