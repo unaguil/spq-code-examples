@@ -2,6 +2,9 @@ services:
 
   mysql:
     image: mysql:8
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./server/sql/create-messages.sql:/docker-entrypoint-initdb.d/01-create-messages.sql:ro
     environment:
       MYSQL_DATABASE: messages
       MYSQL_USER: spq
@@ -70,3 +73,6 @@ services:
       - server
       - web-client
       - grafana
+
+volumes:
+  mysql_data:
