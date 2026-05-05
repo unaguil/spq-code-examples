@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import es.deusto.spq.persistence.Message;
 import es.deusto.spq.persistence.User;
 import es.deusto.spq.persistence.UserRepository;
@@ -27,6 +31,7 @@ import es.deusto.spq.serializable.UserData;
  */
 @Controller
 @RequestMapping(path = "/users")
+@Tag(name = "Users", description = "Operations for user management and message publication")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -41,6 +46,10 @@ public class UserController {
      * @return "Saved" when the operation is completed
      */
     @PostMapping(path = "/add")
+    @Operation(summary = "Register or update a user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User created or updated")
+    })
     public @ResponseBody String registerUser(@RequestBody UserData userData) {    
         logger.info("Checking whether the user already exists or not: '{}'", userData.getLogin());
         User user = userRepository.findById(userData.getLogin()).orElse(null);
@@ -66,6 +75,11 @@ public class UserController {
      * @return message echo on success or 400 when credentials are invalid
      */
     @PostMapping(path = "/say")
+    @Operation(summary = "Publish a message for an authenticated user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Message stored successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid login/password")
+    })
     public @ResponseBody ResponseEntity<?> sayMessage(@RequestBody DirectMessage directMessage) {
         User user = userRepository.findById(directMessage.getUserData().getLogin()).orElse(null);
         if (user != null && user.getPassword().equals(directMessage.getUserData().getPassword())) {
@@ -88,6 +102,10 @@ public class UserController {
      * @return user list with login and password fields
      */
     @GetMapping(path = "/all")
+    @Operation(summary = "List all users")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Users returned")
+    })
     public @ResponseBody Iterable<UserData> getAllUsers() {
         List<UserData> users = new ArrayList<>();
         for (User user : userRepository.findAll()) {

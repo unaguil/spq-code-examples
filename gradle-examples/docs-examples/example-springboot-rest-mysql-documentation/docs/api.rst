@@ -4,6 +4,14 @@ API Reference
 The REST API is fully documented by Doxygen (see :ref:`generating-doxygen`).
 This page gives a concise summary of every endpoint and the DTOs exchanged.
 
+Swagger / OpenAPI
+-----------------
+
+When the server is running locally, OpenAPI docs are published at:
+
+- ``http://localhost:8080/swagger-ui/index.html``
+- ``http://localhost:8080/v3/api-docs``
+
 Endpoints
 ---------
 

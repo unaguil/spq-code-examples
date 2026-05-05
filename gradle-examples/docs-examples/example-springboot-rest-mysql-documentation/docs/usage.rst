@@ -52,6 +52,8 @@ REST API (direct)
 -----------------
 
 All endpoints are under **http://localhost:8080**.
+For interactive API documentation, open
+**http://localhost:8080/swagger-ui/index.html**.
 
 POST /users/add
 ~~~~~~~~~~~~~~~

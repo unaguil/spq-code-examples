@@ -76,6 +76,14 @@ Run the server module with:
 
     ./gradlew :server:bootRun
 
+Swagger / OpenAPI
+-----------------
+
+With the server running, interactive API documentation is available at:
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
 Run the client sample (if a `run` task is configured) with:
 
     ./gradlew :client:run
