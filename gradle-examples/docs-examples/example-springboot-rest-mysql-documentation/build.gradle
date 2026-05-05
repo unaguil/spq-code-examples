@@ -63,10 +63,32 @@ tasks.register('doxygen', Exec) {
     }
 }
 
+tasks.register('sphinx', Exec) {
+    group = 'documentation'
+    description = 'Generates the user manual with Sphinx (activate the .sphinx virtualenv before running).'
+
+    def sphinxSource = layout.projectDirectory.dir('docs').asFile
+    def sphinxOutput = layout.buildDirectory.dir('reports/sphinx/html').get().asFile
+
+    inputs.dir(sphinxSource)
+    outputs.dir(sphinxOutput)
+
+    workingDir = projectDir
+
+    def venvSphinx = layout.projectDirectory.file('.sphinx/bin/sphinx-build').asFile
+    commandLine(venvSphinx.exists() ? venvSphinx.absolutePath : 'sphinx-build',
+                '-b', 'html', '-q',
+                sphinxSource.absolutePath, sphinxOutput.absolutePath)
+
+    doFirst {
+        sphinxOutput.mkdirs()
+    }
+}
+
 tasks.register('docs') {
     group = 'documentation'
-    description = 'Builds project documentation artifacts.'
-    dependsOn tasks.named('doxygen')
+    description = 'Builds all project documentation artifacts (Doxygen + Sphinx).'
+    dependsOn tasks.named('doxygen'), tasks.named('sphinx')
 }
 
 allprojects {

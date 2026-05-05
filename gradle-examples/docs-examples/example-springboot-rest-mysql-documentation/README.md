@@ -23,23 +23,51 @@ Build all modules with the Gradle wrapper from the project root:
 
     ./gradlew build
 
-Documentation (Doxygen)
------------------------
+Documentation
+-------------
+
+### Doxygen (API reference)
 
 Install Doxygen and ensure the `doxygen` command is available in your `PATH`.
 Graphviz (`dot`) is optional and disabled by default in the project Doxyfile.
 
-Generate Doxygen documentation from the project root with:
-
     ./gradlew doxygen
 
-or using the aggregate documentation task:
+Generated HTML: `build/reports/doxygen/html/index.html`
+
+### Sphinx (user manual)
+
+Create the virtualenv once and install dependencies:
+
+**Linux / macOS**
+```bash
+python3 -m venv .sphinx
+source .sphinx/bin/activate
+pip install -r docs/requirements.txt
+deactivate
+```
+
+**Windows**
+```bat
+python -m venv .sphinx
+.sphinx\Scripts\activate
+pip install -r docs/requirements.txt
+deactivate
+```
+
+The Gradle task resolves `sphinx-build` from `.sphinx/bin/` automatically, so **no active virtualenv is needed** at build time:
+
+```bash
+./gradlew sphinx
+```
+
+Generated HTML: `build/reports/sphinx/html/index.html`
+
+The manual covers deployment, usage, and the REST API reference.
+
+### Build both at once
 
     ./gradlew docs
-
-Generated HTML documentation is available at:
-
-    build/reports/doxygen/html/index.html
 
 Run
 ---
