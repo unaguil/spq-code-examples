@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Persistent user entity with credentials and associated messages.
+ */
 @Entity
 public class User {
     @Id
@@ -26,11 +29,21 @@ public class User {
         this.password = password;
     }
     
+    /**
+     * Adds a message and sets the inverse reference to this user.
+     *
+     * @param message message to associate
+     */
     public void addMessage(Message message) {
         messages.add(message);
         message.setUser(this);
     }
 
+    /**
+     * Removes a message and clears the inverse reference.
+     *
+     * @param message message to detach
+     */
     public void removeMessage(Message message) {
         messages.remove(message);
         message.setUser(null);

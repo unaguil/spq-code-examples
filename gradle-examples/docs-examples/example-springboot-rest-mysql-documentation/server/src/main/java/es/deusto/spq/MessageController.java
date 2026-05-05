@@ -18,6 +18,9 @@ import es.deusto.spq.persistence.User;
 import es.deusto.spq.persistence.UserRepository;
 import es.deusto.spq.serializable.MessageData;
 
+/**
+ * REST endpoint to query messages for a given user.
+ */
 @Controller
 @RequestMapping(path = "/messages")
 public class MessageController {
@@ -27,6 +30,12 @@ public class MessageController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Returns all messages authored by a user identified by login.
+     *
+     * @param login user identifier
+     * @return list of messages or empty list when user does not exist
+     */
     @GetMapping(path = "/all")
     public @ResponseBody Iterable<MessageData> getMessagesByUser(@Param("login") String login) {
         logger.info("Getting all messages by user: '{}'", login);

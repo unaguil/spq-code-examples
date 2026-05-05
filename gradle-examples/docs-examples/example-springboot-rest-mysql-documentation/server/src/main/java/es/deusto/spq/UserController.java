@@ -22,6 +22,9 @@ import es.deusto.spq.serializable.DirectMessage;
 import es.deusto.spq.serializable.MessageData;
 import es.deusto.spq.serializable.UserData;
 
+/**
+ * REST endpoints for user registration, messaging, and listing users.
+ */
 @Controller
 @RequestMapping(path = "/users")
 public class UserController {
@@ -31,6 +34,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Registers a new user or updates the password when the login already exists.
+     *
+     * @param userData login and password payload
+     * @return "Saved" when the operation is completed
+     */
     @PostMapping(path = "/add")
     public @ResponseBody String registerUser(@RequestBody UserData userData) {    
         logger.info("Checking whether the user already exists or not: '{}'", userData.getLogin());
@@ -50,6 +59,12 @@ public class UserController {
         return "Saved";
     }
 
+    /**
+     * Publishes a message on behalf of an authenticated user.
+     *
+     * @param directMessage payload containing credentials and message body
+     * @return message echo on success or 400 when credentials are invalid
+     */
     @PostMapping(path = "/say")
     public @ResponseBody ResponseEntity<?> sayMessage(@RequestBody DirectMessage directMessage) {
         User user = userRepository.findById(directMessage.getUserData().getLogin()).orElse(null);
@@ -67,6 +82,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves all users from persistence.
+     *
+     * @return user list with login and password fields
+     */
     @GetMapping(path = "/all")
     public @ResponseBody Iterable<UserData> getAllUsers() {
         List<UserData> users = new ArrayList<>();

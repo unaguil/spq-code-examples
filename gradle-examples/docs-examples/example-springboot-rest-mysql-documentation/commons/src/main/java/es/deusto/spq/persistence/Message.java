@@ -9,6 +9,9 @@ import jakarta.persistence.ManyToOne;
 
 import java.util.Date;
 
+/**
+ * Persistent message entity linked to a user.
+ */
 @Entity
 public class Message {
 

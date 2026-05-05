@@ -36,6 +36,39 @@ tasks.register('qualityCheck') {
     dependsOn tasks.named('qualityMain'), tasks.named('qualityTest')
 }
 
+tasks.register('doxygen', Exec) {
+    group = 'documentation'
+    description = 'Generates API documentation with Doxygen for all modules.'
+
+    def doxyfile = layout.projectDirectory.file('config/doxygen/Doxyfile').asFile
+    def documentedSources = [
+        'README.md',
+        'commons/src/main/java',
+        'server/src/main/java',
+        'client/src/main/java',
+        'web-client/src/main/java'
+    ]
+
+    inputs.file(doxyfile)
+    inputs.files(documentedSources.collect { path -> file(path) })
+    outputs.dir(layout.buildDirectory.dir('reports/doxygen'))
+
+    workingDir = projectDir
+    commandLine 'doxygen', doxyfile.absolutePath
+
+    doFirst {
+        if (!doxyfile.exists()) {
+            throw new RuntimeException("Doxygen config file not found: ${doxyfile}")
+        }
+    }
+}
+
+tasks.register('docs') {
+    group = 'documentation'
+    description = 'Builds project documentation artifacts.'
+    dependsOn tasks.named('doxygen')
+}
+
 allprojects {
     group = 'es.deusto.spq'
     version = '0.0.1-SNAPSHOT'
@@ -142,7 +175,7 @@ subprojects {
         }.toSet()
     }
 
-    def shouldRunQualityTask = { Task task ->
+    def shouldRunQualityTask = { task ->
         def requestedTasks = explicitlyRequestedTasks.get()
         requestedTasks.contains(task.name) ||
             requestedTasks.any { requested ->

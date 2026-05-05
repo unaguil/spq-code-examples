@@ -23,6 +23,24 @@ Build all modules with the Gradle wrapper from the project root:
 
     ./gradlew build
 
+Documentation (Doxygen)
+-----------------------
+
+Install Doxygen and ensure the `doxygen` command is available in your `PATH`.
+Graphviz (`dot`) is optional and disabled by default in the project Doxyfile.
+
+Generate Doxygen documentation from the project root with:
+
+    ./gradlew doxygen
+
+or using the aggregate documentation task:
+
+    ./gradlew docs
+
+Generated HTML documentation is available at:
+
+    build/reports/doxygen/html/index.html
+
 Run
 ---
 
