@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+dependencies {
+    implementation project(':commons')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j:8.1.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Performance tests live in src/test and are selected with tags
+    testImplementation 'com.github.noconnor:junitperf-junit5:1.35.0'
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform {
+        excludeTags 'integration', 'performance'
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests against an external MySQL database.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+    shouldRunAfter tasks.named('test')
+}
+
+tasks.register('performanceTest', Test) {
+    description = 'Runs performance tests with JUnitPerf against an external MySQL database.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'performance'
+    }
+    shouldRunAfter tasks.named('integrationTest')
+}
+
+tasks.named('bootJar') {
+    archiveBaseName.set('server')
+}

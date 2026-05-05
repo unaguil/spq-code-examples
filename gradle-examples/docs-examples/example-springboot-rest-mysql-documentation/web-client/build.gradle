@@ -1,0 +1,34 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+dependencies {
+    implementation project(':commons')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.microsoft.playwright:playwright:1.51.0'
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform {
+        excludeTags 'e2e'
+    }
+}
+
+tasks.register('e2eTest', Test) {
+    description = 'Runs Playwright end-to-end tests (requires server + web-client running externally).'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'e2e'
+    }
+    shouldRunAfter tasks.named('test')
+}
+
+tasks.named('bootJar') {
+    archiveBaseName.set('web-client')
+}
