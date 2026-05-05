@@ -34,6 +34,7 @@ import es.deusto.spq.serializable.UserData;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "spring.jpa.hibernate.ddl-auto=create-drop")
 class ServerIntegrationTest {
 
+    @SuppressWarnings("resource")
     @Container
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8")
             .withDatabaseName("messages")

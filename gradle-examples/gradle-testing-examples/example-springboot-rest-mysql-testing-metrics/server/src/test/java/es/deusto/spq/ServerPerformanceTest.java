@@ -39,6 +39,7 @@ import es.deusto.spq.serializable.UserData;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ServerPerformanceTest {
 
+    @SuppressWarnings("resource")
     @Container
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8")
             .withDatabaseName("messages")
